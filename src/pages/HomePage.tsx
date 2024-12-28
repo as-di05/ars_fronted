@@ -1,4 +1,3 @@
-// SearchWithFilter.tsx
 import React, { useState } from "react";
 import { Box, Divider, Grid2 } from "@mui/material";
 import SearchBar from "../components/SearchBar";
@@ -6,7 +5,7 @@ import Container from "../containers/Container";
 import MainCardsContainer from "../containers/MainCardsContainer";
 import { realEstateData } from "../utils/config";
 
-const SearchWithFilter: React.FC = () => {
+const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("Все");
 
@@ -51,4 +50,4 @@ const SearchWithFilter: React.FC = () => {
   );
 };
 
-export default SearchWithFilter;
+export default HomePage;

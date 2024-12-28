@@ -13,7 +13,7 @@ const Dashboard: React.FC = () => {
       <Navbar />
       <Box
         display={"grid"}
-        gridTemplateColumns={"200px auto"}
+        gridTemplateColumns={"210px auto"}
         width="100%"
         height="calc(100vh - 60px)"
         overflow="auto"

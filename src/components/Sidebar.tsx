@@ -1,5 +1,5 @@
 import React from "react";
-import { ListItem, ListItemText, Button, Box } from "@mui/material";
+import { ListItem, ListItemText, Button, Box, Typography } from "@mui/material";
 import {
   GridViewOutlined,
   PeopleOutlined,
@@ -10,19 +10,19 @@ import { NavLink } from "react-router-dom";
 
 const links = [
   {
-    name: "Главная",
+    name: "Главное",
     to: "/",
-    icon: <GridViewOutlined />,
+    icon: <GridViewOutlined sx={{ width: "18px" }} />,
   },
   {
     name: "Сотрудники",
     to: "/employees",
-    icon: <PeopleOutlined />,
+    icon: <PeopleOutlined sx={{ width: "18px" }} />,
   },
   {
     name: "Объекты",
     to: "/real-estates",
-    icon: <CorporateFareOutlined />,
+    icon: <CorporateFareOutlined sx={{ width: "18px" }} />,
   },
 ];
 
@@ -30,12 +30,12 @@ const Sidebar: React.FC = () => {
   return (
     <Box
       position={"fixed"}
-      width={"200px"}
+      width={"210px"}
       sx={{
         display: "flex",
         flexDirection: "column",
         height: "calc(100% - 60px)",
-        backgroundColor: "#1d2126",
+        backgroundColor: "#101e37",
         padding: "16px",
       }}
     >
@@ -58,7 +58,7 @@ const Sidebar: React.FC = () => {
               }}
             >
               {item.icon}
-              <ListItemText primary={item.name} />
+              <Typography fontSize={"16px"}>{item.name}</Typography>
             </ListItem>
           );
         })}
@@ -69,12 +69,12 @@ const Sidebar: React.FC = () => {
           fullWidth
           startIcon={<ExitToApp />}
           sx={{
-            backgroundImage: "linear-gradient(45deg, #625bff, #322d91)",
+            backgroundImage: "linear-gradient(45deg, #656565, #585858)",
             color: "#fff",
             textTransform: "none",
             fontWeight: "bold",
             "&:hover": {
-              backgroundImage: "linear-gradient(45deg, #322d91, #625bff)",
+              backgroundImage: "linear-gradient(45deg, #585858, #656565)",
             },
             borderRadius: "6px",
             paddingY: 1,

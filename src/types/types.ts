@@ -12,12 +12,28 @@ export interface IPrice {
   objectPrice: number | null;
 }
 
+interface Role {
+  id: number;
+  label: string;
+}
+
+export interface IUser {
+  id: number;
+  phone: string;
+  roleId?: number;
+  role?: Role;
+  lastName: string;
+  firstName: string;
+  avatarUrl?: string | null;
+}
+
 export interface IRealEstate {
   id: number;
   category: {
     id: number;
     label: string;
   };
+  employee: IUser;
   idFloor: number;
   idSeries: number;
   idRoom: number;

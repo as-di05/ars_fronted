@@ -7,11 +7,11 @@ import {
   Chip,
   Box,
   Divider,
+  IconButton,
+  Avatar,
 } from "@mui/material";
-import DescriptionIcon from "@mui/icons-material/Description";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { IRealEstate } from "../types/types";
 import IconContainer from "../containers/IconContainer";
 import {
@@ -23,7 +23,8 @@ import {
   StairsRounded,
   TaskRounded,
 } from "@mui/icons-material";
-import { FloorsObj, ReStatusObj, RoomsObj } from "../utils/config";
+import { FloorsObj, IdTypeObj, ReStatusObj, RoomsObj } from "../utils/config";
+import UserCard from "./UserCard";
 
 interface RealEstateCardProps {
   card: IRealEstate;
@@ -83,7 +84,6 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
           alt={card.description}
         />
       </Box>
-
       <CardContent
         sx={{
           width: "100%",
@@ -96,12 +96,18 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
         <Box display={"flex"} justifyContent={"space-between"}>
           <Box display={"flex"} flexDirection={"column"}>
             <Typography variant="body2" fontSize={16} fontWeight={600}>
+              <span>
+                {card.dealType?.id ? IdTypeObj[card.dealType?.id] : ""}
+                {card.id}
+              </span>
+              {" - "}
               {card.category.label}
             </Typography>
             <Typography variant="body2" fontSize={"12px"}>
               {card.ownerName}
             </Typography>
           </Box>
+
           <Box>
             {card.prices && card.prices.length > 0 && (
               <Box>
@@ -169,44 +175,71 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
           </Box>
         </Box>
         <Divider
-          sx={{ width: "100%", margin: "10px 0", borderBottomWidth: "unset" }}
+          sx={{
+            width: "100%",
+            margin: "10px 0",
+            borderBottomWidth: "unset",
+          }}
         />
-        <Box display={"flex"} gap={0.5}>
-          {card?.area && (
-            <IconContainer
-              icon={CropFreeTwoTone}
-              text={`${card.area}m²`}
-              backgroundColor="#e0ebff"
+        <Box
+          display={"flex"}
+          width={"100%"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Box display={"flex"} gap={0.5}>
+            {card?.area && (
+              <IconContainer
+                icon={CropFreeTwoTone}
+                text={`${card.area}m²`}
+                backgroundColor="#e0ebff"
+              />
+            )}
+            {card?.idFloor && (
+              <IconContainer
+                icon={StairsRounded}
+                text={FloorsObj[card.idFloor].label ?? ""}
+                backgroundColor="#e0ebff"
+              />
+            )}
+            {card?.idRoom && (
+              <IconContainer
+                icon={MeetingRoomRounded}
+                text={RoomsObj[card.idRoom].label ?? ""}
+                backgroundColor="#e0ebff"
+              />
+            )}
+            {card?.idWallMaterial && (
+              <IconContainer
+                icon={ConstructionRounded}
+                text={card?.idWallMaterial === 1 ? "Кирпич" : "Панель"}
+                backgroundColor="#e0ebff"
+              />
+            )}
+            {card?.documents && (
+              <IconContainer
+                icon={TaskRounded}
+                text={card?.documents[0].label}
+                backgroundColor="#e0ebff"
+              />
+            )}
+          </Box>
+          <Box display={"flex"} alignItems={"center"} gap={0.5}>
+            <IconButton
+              onClick={() => console.log(1)}
+              color={true ? "secondary" : "default"}
+              sx={{
+                backgroundColor: "none",
+              }}
+            >
+              {card.id % 2 === 1 ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            </IconButton>
+            <UserCard
+              avatarUrl={card.employee.avatarUrl}
+              lastName={card.employee.lastName}
+              firstName={card.employee.firstName}
             />
-          )}
-          {card?.idFloor && (
-            <IconContainer
-              icon={StairsRounded}
-              text={FloorsObj[card.idFloor].label ?? ""}
-              backgroundColor="#e0ebff"
-            />
-          )}
-          {card?.idRoom && (
-            <IconContainer
-              icon={MeetingRoomRounded}
-              text={RoomsObj[card.idRoom].label ?? ""}
-              backgroundColor="#e0ebff"
-            />
-          )}
-          {card?.idWallMaterial && (
-            <IconContainer
-              icon={ConstructionRounded}
-              text={card?.idWallMaterial === 1 ? "Кирпич" : "Панель"}
-              backgroundColor="#e0ebff"
-            />
-          )}
-          {card?.documents && (
-            <IconContainer
-              icon={TaskRounded}
-              text={card?.documents[0].label}
-              backgroundColor="#e0ebff"
-            />
-          )}
+          </Box>
         </Box>
       </CardContent>
     </Card>
