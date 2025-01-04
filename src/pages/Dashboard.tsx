@@ -7,6 +7,7 @@ import HomePage from "./HomePage";
 import EmployeesPage from "./EmployeePage";
 import RealEstatesPage from "./RealEstatesPage";
 import NewRealEstatePage from "./NewRealEstatePage";
+import FullRealEstatePage from "./FullRealEstatePage";
 
 const Dashboard: React.FC = () => {
   return (
@@ -43,6 +44,10 @@ const Dashboard: React.FC = () => {
             <Route
               path="/real-estates/create"
               element={<NewRealEstatePage />}
+            />
+            <Route
+              path="/real-estates/:id"
+              element={<FullRealEstatePage />}
             />
           </Routes>
         </Box>

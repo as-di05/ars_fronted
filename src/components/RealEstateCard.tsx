@@ -25,12 +25,14 @@ import {
 } from "@mui/icons-material";
 import { FloorsObj, IdTypeObj, ReStatusObj, RoomsObj } from "../utils/config";
 import UserCard from "./UserCard";
+import { NavigateFunction } from "react-router-dom";
 
 interface RealEstateCardProps {
   card: IRealEstate;
+  navigate: NavigateFunction;
 }
 
-const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
+const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
   const renderStatusIcon = (statusId: number) => {
     if (!ReStatusObj[statusId]) {
       return null;
@@ -63,6 +65,10 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
 
   return (
     <Card
+      onClick={(e) => {
+        navigate(`/real-estates/${card.id}`);
+        e.stopPropagation();
+      }}
       sx={{
         display: "grid",
         gridTemplateColumns: "20% 80%",

@@ -12,6 +12,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import RealEstateCard from "../components/RealEstateCard";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { IRealEstate } from "../types/types";
+import { useNavigate } from "react-router-dom";
 
 interface MainCardsContainerProps {
   filteredCards: IRealEstate[];
@@ -32,6 +33,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
   onIdSelected,
   containerHeight,
 }) => {
+  const navigate = useNavigate();
   const [sortBy, setSortBy] = React.useState<string | null>(null);
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -140,7 +142,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           {filteredCards.map((card) => (
             <Grid2 key={card.id}>
               <div onClick={() => handleCardClick(card.id)}>
-                <RealEstateCard card={card} />
+                <RealEstateCard card={card} navigate={navigate} />
               </div>
             </Grid2>
           ))}

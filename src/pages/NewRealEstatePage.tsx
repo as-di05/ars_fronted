@@ -51,7 +51,7 @@ const NewRealEstatePage: React.FC = () => {
               },
             }}
           >
-            Объекты
+            Все объекты
             <NavigateNextOutlined sx={{ width: "14px", height: "14px" }} />
           </Box>
           <Box
