@@ -36,12 +36,6 @@ const EmployeesPage: React.FC = () => {
       }}
     >
       <Box height={"80vh"}>
-        <SearchBar
-          value={searchTerm}
-          onChange={handleSearchChange}
-          availableFilters={filterOptions}
-        />
-        <Divider sx={{ width: "100%", margin: "8px 0 20px 0" }} />
         <UserTable
           onAdd={handleAdd}
           users={usersData}

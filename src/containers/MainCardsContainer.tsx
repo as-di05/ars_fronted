@@ -17,6 +17,7 @@ interface MainCardsContainerProps {
   filteredCards: IRealEstate[];
   onFieldSelected?: (field: string) => void;
   onIdSelected?: (id: number) => void;
+  containerHeight?: string;
 }
 const sortOptions = [
   { id: "area", label: "Площадь" },
@@ -29,6 +30,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
   filteredCards,
   onFieldSelected,
   onIdSelected,
+  containerHeight,
 }) => {
   const [sortBy, setSortBy] = React.useState<string | null>(null);
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
@@ -73,7 +75,6 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           <IconButton
             onClick={handleOpenMenu}
             sx={{
-              color: "#625bff",
               background: "none",
               "&:hover": {
                 background: "none",
@@ -127,7 +128,10 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           ))}
         </Menu>
       </Box>
-      <Box height="65vh" sx={{ overflowY: "auto" }}>
+      <Box
+        height={containerHeight ? containerHeight : "calc(90vh - 215px)"}
+        sx={{ overflowY: "auto" }}
+      >
         <Grid2
           container
           spacing={3}

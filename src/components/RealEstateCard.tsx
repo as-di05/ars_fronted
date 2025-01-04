@@ -39,17 +39,18 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
       <Box
         sx={{
           width: "min-content",
+          maxHeight: "220px",
           display: "flex",
           alignItems: "center",
           backgroundColor: `${ReStatusObj[statusId].color}30`,
-          padding: "5px 18px",
-          borderRadius: "8px",
-          gap: "5px",
+          padding: "3px 14px",
+          borderRadius: "6px",
+          gap: "3px",
         }}
       >
         <Typography
           variant="body2"
-          fontSize={14}
+          fontSize={13}
           fontWeight={"500"}
           noWrap
           color={ReStatusObj[statusId].color}
@@ -95,11 +96,8 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
       >
         <Box display={"flex"} justifyContent={"space-between"}>
           <Box display={"flex"} flexDirection={"column"}>
-            <Typography variant="body2" fontSize={16} fontWeight={600}>
-              <span>
-                {card.dealType?.id ? IdTypeObj[card.dealType?.id] : ""}
-                {card.id}
-              </span>
+            <Typography variant="body2" fontSize={14} fontWeight={600}>
+              <span>{card.id}</span>
               {" - "}
               {card.category.label}
             </Typography>
@@ -107,7 +105,6 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
               {card.ownerName}
             </Typography>
           </Box>
-
           <Box>
             {card.prices && card.prices.length > 0 && (
               <Box>
@@ -120,7 +117,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
                   >
                     <Typography
                       fontWeight={"600"}
-                      fontSize={"18px"}
+                      fontSize={"15px"}
                       color="#625bff"
                     >
                       {card.prices[0].objectPrice}
@@ -146,24 +143,36 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
         >
           <Box display={"grid"}>
             <Box display={"flex"} alignItems={"center"} gap={0.5}>
-              <LocationOnRounded sx={{ width: "15px", color: "#78a7fe" }} />
-              <Typography variant="body2" color="#78a7fe">
+              <LocationOnRounded
+                sx={{ width: "12px", height: "12px", color: "#78a7fe" }}
+              />
+              <Typography variant="body2" color="#78a7fe" fontSize={"12px"}>
                 {card.district}
               </Typography>
             </Box>
             {card.dealType && (
               <Box display={"flex"} alignItems={"center"} gap={0.5}>
-                <CreditScoreRounded sx={{ width: "15px", color: "#78a7fe" }} />
-                <Typography variant="body2" color="#78a7fe">
+                <CreditScoreRounded
+                  sx={{ width: "12px", height: "12px", color: "#78a7fe" }}
+                />
+                <Typography variant="body2" color="#78a7fe" fontSize={"12px"}>
                   {card.dealType.label}
                 </Typography>
               </Box>
             )}
-
             <Typography
+              width={"100%"}
               variant="body2"
               color="textSecondary"
-              marginTop={"10px"}
+              marginTop="5px"
+              fontSize="12px"
+              sx={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                WebkitLineClamp: 2,
+              }}
             >
               {card.description}
             </Typography>

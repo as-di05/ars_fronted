@@ -3,7 +3,8 @@ import { Box, Divider, Grid2 } from "@mui/material";
 import SearchBar from "../components/SearchBar";
 import Container from "../containers/Container";
 import MainCardsContainer from "../containers/MainCardsContainer";
-import { realEstateData } from "../utils/config";
+import { categoriesData, realEstateData } from "../utils/config";
+import CategoriesBar from "../components/CategoriesBar";
 
 const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,31 +23,43 @@ const HomePage: React.FC = () => {
   );
 
   return (
-    <Container
-      display="grid"
-      alignItems="center"
-      gap={2}
-      sx={{
-        backgroundColor: "#f9f9f9",
-        borderRadius: "8px",
-        height: "90vh",
-        padding: "20px",
-      }}
+    <Box
+      display={"flex"}
+      flexDirection={"column"}
+      justifyContent={"start"}
+      gap={"10px"}
+      height={"100%"}
     >
-      <Box>
-        <SearchBar
-          value={searchTerm}
-          onChange={handleSearchChange}
-          availableFilters={filterOptions}
-        />
-        <Divider sx={{ width: "100%", margin: "8px 0 10px 0" }} />
-        <MainCardsContainer
-          filteredCards={filteredCards}
-          onFieldSelected={(field) => console.log("Выбранное поле:", field)}
-          onIdSelected={(id) => console.log("Выбранный ID:", id)}
-        />
-      </Box>
-    </Container>
+      <Container
+        sx={{
+          height: "auto",
+          alignItems: "start",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+        }}
+      >
+        <CategoriesBar data={[{ id: 0, label: "Все" }, ...categoriesData]} />
+      </Container>
+      <Container
+        display="grid"
+        alignItems="center"
+        gap={2}
+        sx={{
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+          height: "100%",
+          padding: "20px",
+        }}
+      >
+        <Box>
+          <MainCardsContainer
+            filteredCards={filteredCards}
+            onFieldSelected={(field) => console.log("Выбранное поле:", field)}
+            onIdSelected={(id) => console.log("Выбранный ID:", id)}
+          />
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

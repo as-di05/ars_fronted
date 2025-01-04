@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
   Button,
+  Divider,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -31,7 +32,6 @@ const UserTable: React.FC<UserTableProps> = ({
 }) => {
   return (
     <Box>
-      {/* Кнопка добавления */}
       <Box display="flex" justifyContent="flex-end" mb={1}>
         <Button
           variant="contained"
@@ -48,8 +48,7 @@ const UserTable: React.FC<UserTableProps> = ({
           Новый сотрудник
         </Button>
       </Box>
-
-      {/* Таблица */}
+      <Divider sx={{ width: "100%", margin: "8px 0 20px 0" }} />
       <Table sx={{ minWidth: 650, borderRadius: "8px" }}>
         <TableHead>
           <TableRow>
