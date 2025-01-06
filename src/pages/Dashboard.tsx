@@ -6,6 +6,8 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./HomePage";
 import EmployeesPage from "./EmployeePage";
 import RealEstatesPage from "./RealEstatesPage";
+import NewRealEstatePage from "./NewRealEstatePage";
+import FullRealEstatePage from "./FullRealEstatePage";
 
 const Dashboard: React.FC = () => {
   return (
@@ -13,7 +15,7 @@ const Dashboard: React.FC = () => {
       <Navbar />
       <Box
         display={"grid"}
-        gridTemplateColumns={"210px auto"}
+        gridTemplateColumns={"20vw auto"}
         width="100%"
         height="calc(100vh - 60px)"
         overflow="auto"
@@ -33,13 +35,20 @@ const Dashboard: React.FC = () => {
             flexGrow: 1,
             padding: "16px",
             height: "100%",
-            overflowY: "auto",
           }}
         >
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/employees" element={<EmployeesPage />} />
             <Route path="/real-estates" element={<RealEstatesPage />} />
+            <Route
+              path="/real-estates/create"
+              element={<NewRealEstatePage />}
+            />
+            <Route
+              path="/real-estates/:id"
+              element={<FullRealEstatePage />}
+            />
           </Routes>
         </Box>
       </Box>

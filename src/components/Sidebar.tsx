@@ -30,7 +30,7 @@ const Sidebar: React.FC = () => {
   return (
     <Box
       position={"fixed"}
-      width={"210px"}
+      width={"20vw"}
       sx={{
         display: "flex",
         flexDirection: "column",

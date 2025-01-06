@@ -380,3 +380,22 @@ export const IdTypeObj: { [key: number]: string } = {
   3: "S",
   4: "C",
 };
+
+export const categoriesData = [
+  {
+    id: 1,
+    label: "Квартиры",
+  },
+  {
+    id: 2,
+    label: "Дома",
+  },
+  {
+    id: 3,
+    label: "Участки",
+  },
+  {
+    id: 4,
+    label: "Коммерческие помещения",
+  },
+];

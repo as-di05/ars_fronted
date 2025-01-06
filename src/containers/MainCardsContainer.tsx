@@ -12,11 +12,13 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import RealEstateCard from "../components/RealEstateCard";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { IRealEstate } from "../types/types";
+import { useNavigate } from "react-router-dom";
 
 interface MainCardsContainerProps {
   filteredCards: IRealEstate[];
   onFieldSelected?: (field: string) => void;
   onIdSelected?: (id: number) => void;
+  containerHeight?: string;
 }
 const sortOptions = [
   { id: "area", label: "Площадь" },
@@ -29,7 +31,9 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
   filteredCards,
   onFieldSelected,
   onIdSelected,
+  containerHeight,
 }) => {
+  const navigate = useNavigate();
   const [sortBy, setSortBy] = React.useState<string | null>(null);
   const [sortOrder, setSortOrder] = React.useState<"asc" | "desc">("asc");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -73,7 +77,6 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           <IconButton
             onClick={handleOpenMenu}
             sx={{
-              color: "#625bff",
               background: "none",
               "&:hover": {
                 background: "none",
@@ -127,7 +130,10 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           ))}
         </Menu>
       </Box>
-      <Box height="65vh" sx={{ overflowY: "auto" }}>
+      <Box
+        height={containerHeight ? containerHeight : "calc(90vh - 215px)"}
+        sx={{ overflowY: "auto" }}
+      >
         <Grid2
           container
           spacing={3}
@@ -136,7 +142,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           {filteredCards.map((card) => (
             <Grid2 key={card.id}>
               <div onClick={() => handleCardClick(card.id)}>
-                <RealEstateCard card={card} />
+                <RealEstateCard card={card} navigate={navigate} />
               </div>
             </Grid2>
           ))}

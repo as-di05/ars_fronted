@@ -3,10 +3,11 @@ import { Box, Typography } from "@mui/material";
 import { SvgIconProps } from "@mui/material/SvgIcon";
 
 interface IconContainerProps {
-  icon: React.ComponentType<SvgIconProps>;
+  icon?: React.ComponentType<SvgIconProps>;
   text: string;
   iconColor?: string;
   backgroundColor: string;
+  size?: string;
 }
 
 const IconContainer: React.FC<IconContainerProps> = ({
@@ -14,22 +15,33 @@ const IconContainer: React.FC<IconContainerProps> = ({
   iconColor,
   text,
   backgroundColor,
+  size,
 }) => {
   return (
     <Box
       sx={{
         width: "min-content",
-        maxWidth: '200px',
+        maxWidth: "180px",
         display: "flex",
         alignItems: "center",
         backgroundColor: backgroundColor,
-        padding: "2px 10px",
+        padding: "2px 8px",
         borderRadius: "6px",
         gap: "5px",
       }}
     >
-      <Icon sx={{ width: "14px", color: iconColor ?? "#78a7fe" }} />
-      <Typography variant="body2" fontSize={12} fontWeight={"500"} noWrap color="#78a7fe">
+      {Icon && (
+        <Icon
+          sx={{ width: size ? size : "12px", color: iconColor ?? "#78a7fe" }}
+        />
+      )}
+      <Typography
+        variant="body2"
+        fontSize={size ? size : 11}
+        fontWeight={"500"}
+        noWrap
+        color="#78a7fe"
+      >
         {text}
       </Typography>
     </Box>
