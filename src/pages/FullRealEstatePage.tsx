@@ -132,12 +132,20 @@ const FullRealEstatePage: React.FC = () => {
             ],
             prices: [
               {
-                id: 5,
+                id: 3,
                 currency: "USD",
-                createdAt: "2024-12-23 13:33:10.000000",
-                updatedAt: "2024-12-23 13:33:10.000000",
-                ownerPrice: 100000,
-                objectPrice: 120000,
+                createdAt: "2024-12-15 21:42:14.000000",
+                updatedAt: "2024-12-15 21:42:14.000000",
+                ownerPrice: 23300,
+                objectPrice: 100000,
+              },
+              {
+                id: 4,
+                currency: "USD",
+                createdAt: "2024-12-15 21:42:47.000000",
+                updatedAt: "2024-12-15 21:42:47.000000",
+                ownerPrice: 70000,
+                objectPrice: 75000,
               },
             ],
           }}
