@@ -15,20 +15,18 @@ import { IRealEstate } from "../types/types";
 import { useNavigate } from "react-router-dom";
 
 interface MainCardsContainerProps {
-  filteredCards: IRealEstate[];
+  items: IRealEstate[];
   onFieldSelected?: (field: string) => void;
   onIdSelected?: (id: number) => void;
   containerHeight?: string;
 }
 const sortOptions = [
-  { id: "area", label: "Площадь" },
-  { id: "date", label: "Дата" },
-  { id: "district", label: "Район" },
-  { id: "id_status", label: "Статус" },
+  { id: "created", label: "Новые" },
+  { id: "lastUpdated", label: "Измененные" },
 ];
 
 const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
-  filteredCards,
+  items,
   onFieldSelected,
   onIdSelected,
   containerHeight,
@@ -92,7 +90,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
             <Typography fontSize={"13px"} fontWeight={"600"}>
               {sortBy
                 ? sortOptions.find((option) => option.id === sortBy)?.label
-                : "Сортировка"}
+                : "По умолчанию"}
             </Typography>
             <Box display={"grid"}>
               <KeyboardArrowUp
@@ -139,7 +137,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           spacing={3}
           sx={{ display: "grid", padding: "15px 5px" }}
         >
-          {filteredCards.map((card) => (
+          {items.map((card) => (
             <Grid2 key={card.id}>
               <div onClick={() => handleCardClick(card.id)}>
                 <RealEstateCard card={card} navigate={navigate} />

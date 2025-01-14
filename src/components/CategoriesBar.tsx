@@ -15,25 +15,30 @@ import { Box, Typography } from "@mui/material";
 
 interface CategoriesBarProps {
   data: any[];
-  activeId?: number;
+  handleSelect?: (categoryId: number) => void;
 }
+
+const iconSx = {
+  width: "18px",
+  height: "18px",
+};
 
 const categoryIcons: { [key: string]: any } = {
   0: {
-    outlined: <ClearAllOutlined sx={{ width: "18px", height: "18px" }} />,
-    filled: <ClearAllRounded sx={{ width: "18px", height: "18px" }} />,
+    outlined: <ClearAllOutlined sx={iconSx} />,
+    filled: <ClearAllRounded sx={iconSx} />,
   },
   1: {
-    outlined: <ApartmentOutlined sx={{ width: "18px", height: "18px" }} />,
-    filled: <ApartmentRounded sx={{ width: "18px", height: "18px" }} />,
+    outlined: <ApartmentOutlined sx={iconSx} />,
+    filled: <ApartmentRounded sx={iconSx} />,
   },
   2: {
-    outlined: <HomeOutlined sx={{ width: "18px", height: "18px" }} />,
-    filled: <HomeRounded sx={{ width: "18px", height: "18px" }} />,
+    outlined: <HomeOutlined sx={iconSx} />,
+    filled: <HomeRounded sx={iconSx} />,
   },
   3: {
-    outlined: <MapOutlined sx={{ width: "18px", height: "18px" }} />,
-    filled: <MapRounded sx={{ width: "18px", height: "18px" }} />,
+    outlined: <MapOutlined sx={iconSx} />,
+    filled: <MapRounded sx={iconSx} />,
   },
   4: {
     outlined: <AssuredWorkloadOutlined fontSize="small" />,
@@ -41,14 +46,24 @@ const categoryIcons: { [key: string]: any } = {
   },
 };
 
-const CategoriesBar: React.FC<CategoriesBarProps> = ({ data, activeId }) => {
+const CategoriesBar: React.FC<CategoriesBarProps> = ({
+  data,
+  handleSelect,
+}) => {
   const [activeCategory, setActiveCategory] = useState<number>(0);
 
   useEffect(() => {
-    if (activeId) {
-      setActiveCategory(activeId);
+    if (data.length) {
+      setActiveCategory(data[0].id);
     }
-  }, [activeId]);
+  }, []);
+
+  const handleCategoryClick = (categoryId: number) => {
+    setActiveCategory(categoryId);
+    if (handleSelect) {
+      handleSelect(categoryId);
+    }
+  };
 
   return (
     <Box
@@ -61,7 +76,7 @@ const CategoriesBar: React.FC<CategoriesBarProps> = ({ data, activeId }) => {
         return (
           <Box
             key={item.id}
-            onClick={() => setActiveCategory(item.id)}
+            onClick={() => handleCategoryClick(item.id)}
             display="flex"
             flexDirection="column"
             alignItems="start"

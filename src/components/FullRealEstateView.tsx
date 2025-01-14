@@ -230,7 +230,7 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                 <PlaceOutlined
                   sx={{ color: "#625bff", width: "14px", height: "14px" }}
                 />
-                {data.district}
+                {data.district?.label}
               </Typography>
             </Box>
             <Box display="flex">{renderStatusIcon(data.idStatus)}</Box>

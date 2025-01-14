@@ -3,15 +3,21 @@ import { TextField, MenuItem, Box, Chip } from "@mui/material";
 
 interface MultiSelectProps {
   items: { id: number; label: string }[];
+  onChange: (name: string, selectedIds: number[]) => void;
+  name: string;
 }
 
-const MultiSelect: React.FC<MultiSelectProps> = ({ items }) => {
+const MultiSelect: React.FC<MultiSelectProps> = ({ items, name, onChange }) => {
   const [selectedDocuments, setSelectedDocuments] = useState<number[]>([]);
   const [itemsObj, setItemsObj] = useState<{ [key: number]: any }>({});
+  const [open, setOpen] = useState(false);
 
   const handleDocumentChange = (event: any) => {
     const value = event.target.value as number[];
     setSelectedDocuments(value);
+    if (value.length > 0) {
+      setOpen(false);
+    }
   };
 
   const handleDeleteFilter = (id: number) => {
@@ -28,6 +34,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ items }) => {
     }
   }, [items]);
 
+  useEffect(() => {
+    onChange(name, selectedDocuments);
+  }, [selectedDocuments]);
+
   return (
     <Box display={"grid"} gap={0.1}>
       <TextField
@@ -43,6 +53,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ items }) => {
         onChange={handleDocumentChange}
         SelectProps={{
           multiple: true,
+          open: open,
+          onClose: () => setOpen(false),
+          onOpen: () => setOpen(true),
         }}
         sx={{
           fontSize: "14px",

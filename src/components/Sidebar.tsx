@@ -63,7 +63,13 @@ const Sidebar: React.FC = () => {
           );
         })}
       </div>
-      <Box sx={{ marginTop: "auto" }}>
+      <Box
+        sx={{ marginTop: "auto" }}
+        onClick={() => {
+          localStorage.removeItem("jwt");
+          window.location.href = "/login";
+        }}
+      >
         <Button
           variant="contained"
           fullWidth

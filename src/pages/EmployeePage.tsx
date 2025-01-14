@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Divider, Grid2 } from "@mui/material";
 import SearchBar from "../components/SearchBar";
 import Container from "../containers/Container";
 import UserTable from "../components/UserTable";
 import { usersData } from "../utils/config";
+import { apiRequest } from "../utils/api";
 
 const EmployeesPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
-  const filterOptions = ["Все", "Активные", "Завершенные"];
+  const [data, setData] = useState<any[]>([]);
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
   };
@@ -22,6 +22,21 @@ const EmployeesPage: React.FC = () => {
   };
 
   const handleAdd = () => console.log("Добавить нового сотрудника");
+
+  const getUsers = async () => {
+    try {
+      const response = await apiRequest("GET", "/users");
+      if (Array.isArray(response) && response.length) {
+        setData(response);
+      } else {
+        setData([]);
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
 
   return (
     <Container
@@ -38,7 +53,7 @@ const EmployeesPage: React.FC = () => {
       <Box height={"80vh"}>
         <UserTable
           onAdd={handleAdd}
-          users={usersData}
+          users={data}
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
