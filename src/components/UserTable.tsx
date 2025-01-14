@@ -93,7 +93,7 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell>
                 <Typography variant="body2" fontSize={14}>
-                  {user.phone}
+                  {user.phoneNumber}
                 </Typography>
               </TableCell>
               <TableCell>

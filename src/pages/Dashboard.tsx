@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
@@ -8,11 +8,30 @@ import EmployeesPage from "./EmployeePage";
 import RealEstatesPage from "./RealEstatesPage";
 import NewRealEstatePage from "./NewRealEstatePage";
 import FullRealEstatePage from "./FullRealEstatePage";
+import { IUser } from "../types/types";
+import { apiRequest } from "../utils/api";
 
 const Dashboard: React.FC = () => {
+  const [user, setUser] = useState<IUser | null>(null);
+
+  const getUser = async () => {
+    try {
+      const response: IUser = await apiRequest("GET", `/users/me`);
+      if (response && response.id) {
+        setUser(response);
+      } else {
+        setUser(null);
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   return (
     <Box>
-      <Navbar />
+      <Navbar user={user} />
       <Box
         display={"grid"}
         gridTemplateColumns={"20vw auto"}
@@ -45,10 +64,7 @@ const Dashboard: React.FC = () => {
               path="/real-estates/create"
               element={<NewRealEstatePage />}
             />
-            <Route
-              path="/real-estates/:id"
-              element={<FullRealEstatePage />}
-            />
+            <Route path="/real-estates/:id" element={<FullRealEstatePage />} />
           </Routes>
         </Box>
       </Box>

@@ -153,7 +153,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
                 sx={{ width: "12px", height: "12px", color: "#78a7fe" }}
               />
               <Typography variant="body2" color="#78a7fe" fontSize={"12px"}>
-                {card.district}
+                {card.district?.label}
               </Typography>
             </Box>
             {card.dealType && (

@@ -1,26 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Divider, Grid2 } from "@mui/material";
 import SearchBar from "../components/SearchBar";
 import Container from "../containers/Container";
 import MainCardsContainer from "../containers/MainCardsContainer";
-import { categoriesData, realEstateData } from "../utils/config";
+import { categoriesData } from "../utils/config";
 import CategoriesBar from "../components/CategoriesBar";
+import { apiRequest } from "../utils/api";
 
 const HomePage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("Все");
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [sortField, setSortField] = useState<string>("");
+  const [reData, setReData] = useState<any[]>([]);
 
-  const filterOptions = ["Все", "Активные", "Завершенные"];
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
+  const handleSelectCategory = (categoryId: number) => {
+    setSelectedCategory(categoryId);
   };
 
-  const filteredCards = realEstateData.filter(
-    (card) =>
-      filter === "Все" ||
-      (card.id === 1 && filter === "Активные") ||
-      (card.id === 2 && filter === "Завершенные")
-  );
+  const handleFieldSorting = (field: string) => {
+    setSortField(field);
+  };
+
+  const getRealEstates = async ({
+    categoryId,
+    sortColumn,
+  }: {
+    categoryId?: number | null;
+    sortColumn?: string;
+  }) => {
+    try {
+      let query = "";
+
+      query += categoryId ? `categoryId=${categoryId}` : "";
+      query += sortColumn
+        ? `${query.length ? "&" : ""}sortColumn=${sortColumn}`
+        : "";
+
+      const response = await apiRequest("GET", `/real-estate?${query}`);
+      if (Array.isArray(response) && response.length) {
+        setReData(response);
+      } else {
+        setReData([]);
+      }
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (selectedCategory === null && !sortField?.length) {
+      getRealEstates({});
+    } else {
+      getRealEstates({ categoryId: selectedCategory, sortColumn: sortField });
+    }
+  }, [selectedCategory, sortField]);
 
   return (
     <Box
@@ -38,7 +69,10 @@ const HomePage: React.FC = () => {
           borderRadius: "8px",
         }}
       >
-        <CategoriesBar data={[{ id: 0, label: "Все" }, ...categoriesData]} />
+        <CategoriesBar
+          data={[{ id: 0, label: "Все" }, ...categoriesData]}
+          handleSelect={handleSelectCategory}
+        />
       </Container>
       <Container
         display="grid"
@@ -53,8 +87,8 @@ const HomePage: React.FC = () => {
       >
         <Box>
           <MainCardsContainer
-            filteredCards={filteredCards}
-            onFieldSelected={(field) => console.log("Выбранное поле:", field)}
+            items={reData}
+            onFieldSelected={handleFieldSorting}
             onIdSelected={(id) => console.log("Выбранный ID:", id)}
           />
         </Box>

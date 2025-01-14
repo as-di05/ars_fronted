@@ -9,12 +9,16 @@ interface UserProps {
   phone?: string;
   inFull?: boolean;
   size?: "small" | "big";
+  bgcolor?: string;
+  color?: string;
 }
 
 const UserCard: React.FC<UserProps> = ({
   firstName,
   lastName,
   avatarUrl,
+  bgcolor,
+  color,
   phone,
   inFull,
   size,
@@ -33,8 +37,8 @@ const UserCard: React.FC<UserProps> = ({
       <Avatar
         src={avatarUrl ? avatarUrl : undefined}
         sx={{
-          bgcolor: false ? "transparent" : "#625bff",
-          color: "white",
+          bgcolor: bgcolor ? bgcolor : "#625bff",
+          color: color ? color : "#fff",
           width: size === "big" ? "36px" : "28px",
           height: size === "big" ? "36px" : "28px",
           fontSize: size === "big" ? "20px" : "16px",

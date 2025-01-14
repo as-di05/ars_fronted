@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import { TextField, Box, Chip } from "@mui/material";
+import { TextField, Box, Chip, Button } from "@mui/material";
 
-const FileUploadField = () => {
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+// Интерфейс для пропсов компонента
+interface FileUploadFieldProps {
+  onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!event.target.files) return;
-    const files = Array.from(event.target.files);
-
-    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
-    setSelectedFiles((prev) => [...prev, ...imageFiles]);
-  };
+const FileUploadField: React.FC<FileUploadFieldProps> = ({ onFileChange }) => {
+  const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
 
   const handleDeleteFile = (fileName: string) => {
     setSelectedFiles((prev) => prev.filter((file) => file.name !== fileName));
@@ -43,7 +40,18 @@ const FileUploadField = () => {
             color: "#625bff",
           },
         }}
-        onChange={handleFileChange}
+        onChange={(e: any) => {
+          // Вызовем переданный обработчик onFileChange
+          onFileChange(e);
+
+          // Добавим файлы к состоянию
+          if (!e.target.files) return;
+          const files = Array.from(e.target.files);
+          const imageFiles = files.filter((file: any) =>
+            file.type.startsWith("image/")
+          );
+          setSelectedFiles((prev) => [...prev, ...imageFiles]);
+        }}
       />
       {selectedFiles.length > 0 && (
         <Box

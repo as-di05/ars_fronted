@@ -109,7 +109,10 @@ const FullRealEstatePage: React.FC = () => {
             createdAt: "2024-12-23T07:33:10.000Z",
             updatedAt: "2024-12-23T07:33:10.000Z",
             area: 59,
-            district: "Филармония",
+            district: {
+              id: 1,
+              label: "Филармония",
+            },
             description:
               "Сдача под ПСО назначена на 1 квартал 2025 года./n \n Есть центральное отопление. Тихий район",
             documents: [
