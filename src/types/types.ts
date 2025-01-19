@@ -17,11 +17,17 @@ interface Role {
   label: string;
 }
 
+export interface ICommonType {
+  id: number;
+  label: string;
+}
+
 export interface IUser {
   id: number;
   phoneNumber: string;
   roleId?: number;
   role?: Role;
+  login?: string;
   lastName: string;
   firstName: string;
   avatarUrl?: string | null;
@@ -53,8 +59,12 @@ export interface IRealEstate {
   createdAt: string;
   updatedAt: string;
   area: number;
-  image?: string | null;
+  images?: {
+    id: string;
+    url: string;
+  }[];
   description: string;
+  isFavorite?: boolean;
   documents?: IDocument[] | null;
   prices?: IPrice[] | null;
 }

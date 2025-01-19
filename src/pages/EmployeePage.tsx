@@ -3,25 +3,33 @@ import { Box, Divider, Grid2 } from "@mui/material";
 import SearchBar from "../components/SearchBar";
 import Container from "../containers/Container";
 import UserTable from "../components/UserTable";
-import { usersData } from "../utils/config";
 import { apiRequest } from "../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const EmployeesPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const [data, setData] = useState<any[]>([]);
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-  };
 
   const handleEdit = (id: number) => {
     console.log(`Редактировать пользователя с ID ${id}`);
   };
 
-  const handleDelete = (id: number) => {
-    console.log(`Удалить пользователя с ID ${id}`);
+  const handleDeleteUser = async (userId: number) => {
+    try {
+      const response: any = await apiRequest("DELETE", `/users/${userId}`);
+      if (response?.status) {
+        window.location.reload();
+      } else {
+        console.error(response?.message || "Error deleting user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
 
-  const handleAdd = () => console.log("Добавить нового сотрудника");
+  const handleAddNew = () => {
+    navigate("/employees/create");
+  };
 
   const getUsers = async () => {
     try {
@@ -52,10 +60,10 @@ const EmployeesPage: React.FC = () => {
     >
       <Box height={"80vh"}>
         <UserTable
-          onAdd={handleAdd}
+          onAdd={handleAddNew}
           users={data}
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteUser}
         />
       </Box>
     </Container>

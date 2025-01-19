@@ -39,7 +39,12 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ items, name, onChange }) => {
   }, [selectedDocuments]);
 
   return (
-    <Box display={"grid"} gap={0.1}>
+    <Box
+      display={"grid"}
+      gap={0.1}
+      alignItems={"start"}
+      gridTemplateRows={"40px auto"}
+    >
       <TextField
         label="Типы документов"
         select

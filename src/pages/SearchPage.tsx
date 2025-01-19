@@ -1,19 +1,24 @@
-import React, { useState } from "react";
-import { Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography, CircularProgress } from "@mui/material";
 import Container from "../containers/Container";
-import { useNavigate } from "react-router-dom";
+import MainCardsContainer from "../containers/MainCardsContainer";
 import { NavigateNextOutlined } from "@mui/icons-material";
-import AddRealEstateContainer from "../containers/AddRealEstateContainer";
-import MatchedRealEstate from "../components/MatchedRealEstate";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 import { apiRequest } from "../utils/api";
-import { IRealEstate } from "../types/types";
 
-const NewRealEstatePage: React.FC = () => {
+const SearchPage: React.FC = () => {
   const navigate = useNavigate();
-  const [reData, setReData] = useState<IRealEstate[]>([]);
+  const searchQuery = useSelector(
+    (state: RootState) => state.searchRealEstate.searchQuery
+  );
+  const [reData, setReData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); 
 
   const getRealEstates = async ({
     filter,
+    search,
   }: {
     filter?: {
       categoryId?: number | null;
@@ -24,7 +29,9 @@ const NewRealEstatePage: React.FC = () => {
       roomId?: number;
       seriesId?: number;
     };
+    search?: string;
   }) => {
+    setLoading(true);
     try {
       const queryParams = new URLSearchParams();
       if (filter) {
@@ -33,6 +40,9 @@ const NewRealEstatePage: React.FC = () => {
             queryParams.append(`filter[${key}]`, value.toString());
           }
         });
+      }
+      if (search) {
+        queryParams.append("search", search);
       }
 
       const queryString = queryParams.toString();
@@ -44,8 +54,27 @@ const NewRealEstatePage: React.FC = () => {
       }
     } catch (e) {
       console.error("Error fetching real estates:", e);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    if (searchQuery && searchQuery.length > 0) {
+      timeoutId = setTimeout(() => {
+        getRealEstates({
+          filter: {},
+          search: searchQuery,
+        });
+      }, 1000);
+    } else {
+      timeoutId = setTimeout(() => {
+        navigate("/");
+      }, 1000);
+    }
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, navigate]);
 
   const renderRoutes = () => {
     return (
@@ -76,22 +105,6 @@ const NewRealEstatePage: React.FC = () => {
             <NavigateNextOutlined sx={{ width: "14px", height: "14px" }} />
           </Box>
           <Box
-            onClick={() => navigate("/real-estates")}
-            display={"flex"}
-            alignItems={"center"}
-            gap={0.2}
-            color={"#00000066"}
-            sx={{
-              cursor: "pointer",
-              ":hover": {
-                color: "#625bff",
-              },
-            }}
-          >
-            Все объекты
-            <NavigateNextOutlined sx={{ width: "14px", height: "14px" }} />
-          </Box>
-          <Box
             display={"flex"}
             alignItems={"center"}
             gap={0.2}
@@ -99,7 +112,7 @@ const NewRealEstatePage: React.FC = () => {
               cursor: "pointer",
             }}
           >
-            Новый объект
+            Поиск объектов
           </Box>
         </Box>
       </Container>
@@ -108,36 +121,52 @@ const NewRealEstatePage: React.FC = () => {
 
   return (
     <Box
-      display={"grid"}
-      gridTemplateColumns={"70% 30%"}
+      display={"flex"}
+      flexDirection={"column"}
+      justifyContent={"start"}
       gap={"10px"}
       height={"100%"}
     >
-      <Box
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"start"}
-        gap={"10px"}
-        height={"100%"}
-      >
-        {renderRoutes()}
-        <AddRealEstateContainer getRealEstates={getRealEstates} />
-      </Box>
+      {renderRoutes()}
       <Container
+        display="grid"
+        alignItems="center"
+        gap={2}
         sx={{
-          height: "auto",
-          alignItems: "start",
           backgroundColor: "#f9f9f9",
           borderRadius: "8px",
+          height: "100%",
         }}
-        display={"grid"}
-        gap={"10px"}
       >
-        <Box fontSize={"14px"}>Совпавшие объекты:</Box>
-        <MatchedRealEstate items={reData} />
+        <Box>
+          {loading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="200px"
+            >
+              <CircularProgress />
+            </Box>
+          ) : reData && reData.length ? (
+            <MainCardsContainer
+              items={reData}
+              // onIdSelected={(id) => console.log("Выбранный ID:", id)}
+            />
+          ) : (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="100px"
+            >
+              <h2>Поиск не дал никаких результатов</h2>
+            </Box>
+          )}
+        </Box>
       </Container>
     </Box>
   );
 };
 
-export default NewRealEstatePage;
+export default SearchPage;

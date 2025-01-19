@@ -4,14 +4,9 @@ import {
   CardContent,
   Typography,
   CardMedia,
-  Chip,
   Box,
   Divider,
-  IconButton,
-  Avatar,
 } from "@mui/material";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import { IRealEstate } from "../types/types";
 import IconContainer from "../containers/IconContainer";
 import {
@@ -23,9 +18,10 @@ import {
   StairsRounded,
   TaskRounded,
 } from "@mui/icons-material";
-import { FloorsObj, IdTypeObj, ReStatusObj, RoomsObj } from "../utils/config";
+import { FloorsObj, ReStatusObj, RoomsObj } from "../utils/config";
 import UserCard from "./UserCard";
 import { NavigateFunction } from "react-router-dom";
+import FavoriteButton from "./FavoriteBtn";
 
 interface RealEstateCardProps {
   card: IRealEstate;
@@ -66,7 +62,9 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
   return (
     <Card
       onClick={(e) => {
-        navigate(`/real-estates/${card.id}`);
+        if ((e.target as HTMLElement).closest(".favorite-button") === null) {
+          navigate(`/real-estates/${card.id}`);
+        }
         e.stopPropagation();
       }}
       sx={{
@@ -87,7 +85,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
             objectFit: "cover",
             borderRadius: "8px 0 0 8px",
           }}
-          image={card?.image || "https://via.placeholder.com/150"}
+          image={card?.images?.length ? card?.images[0].url : "/no_photo.png"}
           alt={card.description}
         />
       </Box>
@@ -103,7 +101,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
         <Box display={"flex"} justifyContent={"space-between"}>
           <Box display={"flex"} flexDirection={"column"}>
             <Typography variant="body2" fontSize={14} fontWeight={600}>
-              <span>{card.id}</span>
+              <span>ID: {card.id}</span>
               {" - "}
               {card.category.label}
             </Typography>
@@ -240,15 +238,11 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
             )}
           </Box>
           <Box display={"flex"} alignItems={"center"} gap={0.5}>
-            <IconButton
-              onClick={() => console.log(1)}
-              color={true ? "secondary" : "default"}
-              sx={{
-                backgroundColor: "none",
-              }}
-            >
-              {card.id % 2 === 1 ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            </IconButton>
+            <FavoriteButton
+              className="favorite-button"
+              realEstateId={card.id}
+              isFavorite={card?.isFavorite ?? false}
+            />
             <UserCard
               avatarUrl={card.employee.avatarUrl}
               lastName={card.employee.lastName}

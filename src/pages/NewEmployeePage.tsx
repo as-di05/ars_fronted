@@ -1,33 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box } from "@mui/material";
 import Container from "../containers/Container";
+import { useNavigate } from "react-router-dom";
 import { NavigateNextOutlined } from "@mui/icons-material";
-import { useNavigate, useParams } from "react-router-dom";
-import FullRealEstateView from "../components/FullRealEstateView";
-import { IRealEstate } from "../types/types";
-import { apiRequest } from "../utils/api";
+import AddUserContainer from "../containers/AddUserContainer";
 
-const FullRealEstatePage: React.FC = () => {
-  const { id } = useParams();
+const NewEmployeePage: React.FC = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<IRealEstate | null>(null);
-
-  const getRealEstate = async (id: number) => {
-    try {
-      const response = await apiRequest("GET", `/real-estate?id=${id}`);
-      if (Array.isArray(response) && response.length) {
-        setData(response[0]);
-      } else {
-        setData(null);
-      }
-    } catch (e) {}
-  };
-
-  useEffect(() => {
-    if (Number(id)) {
-      getRealEstate(Number(id));
-    }
-  }, [id]);
 
   const renderRoutes = () => {
     return (
@@ -58,7 +37,7 @@ const FullRealEstatePage: React.FC = () => {
             <NavigateNextOutlined sx={{ width: "14px", height: "14px" }} />
           </Box>
           <Box
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/employees")}
             display={"flex"}
             alignItems={"center"}
             gap={0.2}
@@ -70,7 +49,7 @@ const FullRealEstatePage: React.FC = () => {
               },
             }}
           >
-            Все объекты
+            Все сотрудники
             <NavigateNextOutlined sx={{ width: "14px", height: "14px" }} />
           </Box>
           <Box
@@ -81,7 +60,7 @@ const FullRealEstatePage: React.FC = () => {
               cursor: "pointer",
             }}
           >
-            Объект ID:{1}
+            Новый сотрудник
           </Box>
         </Box>
       </Container>
@@ -98,10 +77,10 @@ const FullRealEstatePage: React.FC = () => {
         height={"100%"}
       >
         {renderRoutes()}
-        <FullRealEstateView data={data} />
+        <AddUserContainer />
       </Box>
     </Box>
   );
 };
 
-export default FullRealEstatePage;
+export default NewEmployeePage;

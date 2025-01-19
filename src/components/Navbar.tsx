@@ -1,16 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography, IconButton, Avatar } from "@mui/material";
 import SearchBar from "./SearchBar";
 import { IUser } from "../types/types";
 import UserCard from "./UserCard";
+import { useAppSelector } from "../hooks/hooks";
+import { useDispatch } from "react-redux";
+import { searchFilterProperty } from "../features/searchRealEstate/searchRealEstateSlice";
+import { useNavigate } from "react-router-dom";
 
-const Navbar: React.FC<{ user: IUser | null }> = ({ user }) => {
+const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const currentUserState = useAppSelector((state) => state.currentUser);
   const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState<IUser | null>(null);
 
   const filterOptions = ["Все", "Активные", "Завершенные"];
   const handleSearchChange = (value: string) => {
     setSearchTerm(value);
   };
+
+  useEffect(() => {
+    if (currentUserState.state) {
+      setUser(currentUserState.state);
+    }
+  }, [currentUserState]);
+
+  useEffect(() => {
+    if (searchTerm?.length > 0) {
+      navigate("/search");
+      dispatch(searchFilterProperty(searchTerm));
+    } else {
+      dispatch(searchFilterProperty(""));
+    }
+  }, [searchTerm]);
 
   return (
     <div style={{ height: "60px" }}>
@@ -43,7 +66,7 @@ const Navbar: React.FC<{ user: IUser | null }> = ({ user }) => {
               flexGrow: 1,
             }}
           >
-            ARS CRM
+            TURAN CRM
           </Typography>
           <SearchBar
             value={searchTerm}
