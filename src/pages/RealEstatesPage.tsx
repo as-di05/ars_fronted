@@ -29,34 +29,54 @@ const RealEstatesPage: React.FC = () => {
   };
 
   const getRealEstates = async ({
-    categoryId,
+    filter,
     sortColumn,
   }: {
-    categoryId?: number | null;
+    filter?: {
+      categoryId?: number | null;
+      ownerName?: string;
+      ownerPhone?: string;
+      districtId?: number;
+      floorId?: number;
+      roomId?: number;
+      seriesId?: number;
+    };
     sortColumn?: string;
   }) => {
     try {
-      let query = "";
+      const queryParams = new URLSearchParams();
+      if (filter) {
+        Object.entries(filter).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            queryParams.append(`filter[${key}]`, value.toString());
+          }
+        });
+      }
+      if (sortColumn) {
+        queryParams.append("sortColumn", sortColumn);
+      }
+      queryParams.append("onlyMy", "true");
 
-      query += categoryId ? `categoryId=${categoryId}` : "";
-      query += sortColumn
-        ? `${query.length ? "&" : ""}sortColumn=${sortColumn}`
-        : "";
-
-      const response = await apiRequest("GET", `/real-estate?${query}`);
+      const queryString = queryParams.toString();
+      const response = await apiRequest("GET", `/real-estate?${queryString}`);
       if (Array.isArray(response) && response.length) {
         setReData(response);
       } else {
         setReData([]);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error("Error fetching real estates:", e);
+    }
   };
 
   useEffect(() => {
     if (selectedCategory === null && !sortField?.length) {
       getRealEstates({});
     } else {
-      getRealEstates({ categoryId: selectedCategory, sortColumn: sortField });
+      getRealEstates({
+        filter: { categoryId: selectedCategory },
+        sortColumn: sortField,
+      });
     }
   }, [selectedCategory, sortField]);
 
@@ -115,7 +135,7 @@ const RealEstatesPage: React.FC = () => {
             containerHeight="calc(90vh - 270px)"
             items={reData}
             onFieldSelected={handleFieldSorting}
-            onIdSelected={(id) => console.log("Выбранный ID:", id)}
+            // onIdSelected={(id) => console.log("Выбранный ID:", id)}
           />
         </Box>
       </Container>

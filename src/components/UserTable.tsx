@@ -9,13 +9,15 @@ import {
   IconButton,
   Typography,
   Box,
-  Button,
   Divider,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddIcon from "@mui/icons-material/Add";
 import { IUser } from "../types/types";
+import CustomBtn from "./CustomBtn";
+import { AddBoxOutlined } from "@mui/icons-material";
+
+const baseUrl = "http://localhost:3001";
 
 interface UserTableProps {
   users: IUser[];
@@ -33,20 +35,18 @@ const UserTable: React.FC<UserTableProps> = ({
   return (
     <Box>
       <Box display="flex" justifyContent="flex-end" mb={1}>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={onAdd}
-          sx={{
-            bgcolor: " #78a7fe",
-            textTransform: "none",
-            fontWeight: 500,
-            fontSize: 14,
-            padding: "6px 16px",
-          }}
+        <Box
+          display={"flex"}
+          justifyContent={"end"}
+          sx={{ cursor: "pointer" }}
+          margin={"5px 0"}
         >
-          Новый сотрудник
-        </Button>
+          <CustomBtn
+            icon={<AddBoxOutlined fontSize={"small"} />}
+            label="Новый сотрудник"
+            onClick={onAdd}
+          />
+        </Box>
       </Box>
       <Divider sx={{ width: "100%", margin: "8px 0 20px 0" }} />
       <Table sx={{ minWidth: 650, borderRadius: "8px" }}>
@@ -54,6 +54,7 @@ const UserTable: React.FC<UserTableProps> = ({
           <TableRow>
             <TableCell>#</TableCell>
             <TableCell>Аватар</TableCell>
+            <TableCell>Логин</TableCell>
             <TableCell>Имя</TableCell>
             <TableCell>Фамилия</TableCell>
             <TableCell>Номер телефона</TableCell>
@@ -69,7 +70,9 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell>
                 <Avatar
-                  src={user.avatarUrl || undefined}
+                  src={
+                    user.avatarUrl ? `${baseUrl}${user.avatarUrl}` : undefined
+                  }
                   sx={{
                     bgcolor: user.avatarUrl ? "transparent" : "#625bff",
                     color: "white",
@@ -80,6 +83,11 @@ const UserTable: React.FC<UserTableProps> = ({
                 >
                   {!user.avatarUrl && user.firstName[0]?.toUpperCase()}
                 </Avatar>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" fontSize={14}>
+                  {user.login}
+                </Typography>
               </TableCell>
               <TableCell>
                 <Typography variant="body2" fontSize={14}>
@@ -112,13 +120,13 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell align="center">
                 <Box display="flex" gap={0.5} justifyContent="center">
-                  <IconButton
+                  {/* <IconButton
                     onClick={() => onEdit(user.id)}
                     color="primary"
                     sx={{ padding: "4px" }}
                   >
                     <EditIcon fontSize="small" />
-                  </IconButton>
+                  </IconButton> */}
                   <IconButton
                     onClick={() => onDelete(user.id)}
                     color="error"

@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, MenuItem, TextField, Typography } from "@mui/material";
-import { SvgIconProps } from "@mui/material/SvgIcon";
 import CustomBtn from "../components/CustomBtn";
 import { CheckOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -10,10 +9,26 @@ import { categoriesData, FloorsObj, RoomsObj } from "../utils/config";
 import FileUploadField from "../components/FileUploadField";
 import MultiSelect from "../components/MultiSelect";
 import { apiRequest } from "../utils/api";
+import imageCompression from "browser-image-compression";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
-interface AddRealEstateContainerProps {}
+interface AddRealEstateContainerProps {
+  getRealEstates: (filter: { [key: string]: any }) => void;
+}
 
-const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
+const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
+  getRealEstates,
+}) => {
+  const navigate = useNavigate();
+  const districtsData = useSelector((state: RootState) => state.districts);
+  const dealTypesData = useSelector((state: RootState) => state.dealTypes);
+  const reSeriesData = useSelector((state: RootState) => state.reSeries);
+  const reHeatingsData = useSelector((state: RootState) => state.reHeatings);
+  const documentsData = useSelector((state: RootState) => state.documents);
+  const wallMaterialsData = useSelector(
+    (state: RootState) => state.wallMaterials
+  );
   const [selectedFloor, setSelectedFloor] = useState<any>(null);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -37,14 +52,23 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
     area: null,
     idFloor: null,
     idSeries: null,
-    idDistrict: 1,
-    idDealType: 1,
+    idHeating: null,
+    idDistrict: null,
+    idDealType: null,
     idWallMaterial: null,
     description: null,
     documents: null,
     ownerPrice: null,
     objectPrice: null,
     currency: "USD",
+  });
+
+  const [reqAdded, setReqAdded] = useState<any>({
+    categoryId: null,
+    idDistrict: null,
+    idRoom: null,
+    idSeries: null,
+    idFloor: null,
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,34 +99,109 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
     });
   };
 
+  const isFormValid = (): boolean => {
+    return (
+      addData.categoryId &&
+      ownerName &&
+      ownerPhone &&
+      addData.idDistrict &&
+      price.ownerPrice &&
+      price.objectPrice &&
+      selectedRoom &&
+      selectedFloor
+    );
+  };
+
   const handleSubmit = async () => {
-    const data = new FormData();
-    for (const key in addData) {
-      if (key === "price" && addData.price !== null) {
-        data.append("price[ownerPrice]", addData.price.ownerPrice.toString());
-        data.append("price[objectPrice]", addData.price.objectPrice.toString());
-        data.append("price[currency]", addData.price.currency);
-      } else {
-        data.append(key, addData[key]);
+    const data: any = new FormData();
+    const compressionOptions = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1500,
+      useWebWorker: true,
+    };
+    data.append("categoryId", addData.categoryId);
+    data.append("ownerName", addData.ownerName);
+    data.append("ownerPhone", addData.ownerPhone);
+    data.append("idRoom", addData.idRoom);
+    data.append("area", addData.area);
+    data.append("idFloor", addData.idFloor);
+    addData.idSeries && data.append("idSeries", addData.idSeries);
+    data.append("idDistrict", addData.idDistrict);
+    data.append("idDealType", addData.idDealType);
+    data.append("idWallMaterial", addData.idWallMaterial);
+    data.append("description", addData.description);
+    data.append("idHeating", addData.idHeating);
+    data.append("ownerPrice", addData.ownerPrice);
+    data.append("objectPrice", addData.objectPrice);
+    data.append("currency", addData.currency);
+
+    if (addData.documents && addData.documents.length > 0) {
+      addData.documents.forEach((doc: any) => {
+        data.append("documents", doc);
+      });
+    }
+
+    for (const file of selectedImages) {
+      try {
+        const compressedFile = await imageCompression(file, compressionOptions);
+        data.append("images", compressedFile);
+      } catch (error) {
+        console.error(`Error compressing file ${file.name}:`, error);
       }
     }
-    selectedImages.forEach((file) => {
-      data.append("images", file);
-    });
     try {
-      const response: any = await apiRequest("POST", "/real-estate/create", {
-        ...addData,
-        price: {
-          ownerPrice: addData.ownerPrice,
-          objectPrice: addData.objectPrice,
-          currency: addData.currency,
-        },
-      });
+      const response: any = await apiRequest(
+        "POST",
+        "/real-estate/create",
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       if (response?.status === true) {
-        window.location.href = "/real-estates";
+        navigate("/real-estates");
       }
     } catch (e) {}
   };
+
+  const fetchData = useCallback(async () => {
+    await getRealEstates({
+      filter: {
+        categoryId: addData.categoryId,
+        districtId: addData.idDistrict,
+        floorId: addData.idFloor,
+        roomId: addData.idRoom,
+        seriesId: addData.idSeries,
+      },
+    });
+  }, [addData]);
+
+  useEffect(() => {
+    if (
+      addData.categoryId &&
+      addData.idRoom &&
+      addData.idDistrict &&
+      addData.idSeries &&
+      addData.idFloor &&
+      reqAdded &&
+      (addData.categoryId !== reqAdded?.categoryId ||
+        addData.idDistrict !== reqAdded?.idDistrict ||
+        addData.idRoom !== reqAdded?.idRoom ||
+        addData.idSeries !== reqAdded?.idSeries ||
+        addData.idFloor !== reqAdded?.idFloor)
+    ) {
+      fetchData();
+      setReqAdded({
+        categoryId: addData.categoryId,
+        idDistrict: addData.idDistrict,
+        idFloor: addData.idFloor,
+        idRoom: addData.idRoom,
+        idSeries: addData.idSeries,
+      });
+    }
+  }, [addData, reqAdded]);
 
   return (
     <Container
@@ -159,11 +258,9 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
             }}
           />
         </Box>
-
         <Box display="grid" gridTemplateColumns="1fr 1fr" gap={3} width="100%">
           <TextField
-            label="Выберите район"
-            placeholder="Тогуз-Торо..."
+            label="Район"
             select
             fullWidth
             size="small"
@@ -172,15 +269,25 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
               shrink: true,
             }}
             name="idDistrict"
-            value={addData.idDistrict || ""}
+            value={addData.idDistrict ?? 0}
             onChange={handleFormChange}
           >
-            <MenuItem value={1} sx={{ fontSize: "14px" }}>
-              Тогуз-Торо
+            <MenuItem value={0} sx={{ fontSize: "14px" }}>
+              --------
             </MenuItem>
-            <MenuItem value={2} sx={{ fontSize: "14px" }}>
-              Восток 5
-            </MenuItem>
+            {districtsData.state?.length && districtsData.state?.length > 0
+              ? districtsData.state.map((item, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={item.id}
+                      sx={{ fontSize: "14px" }}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  );
+                })
+              : null}
           </TextField>
           <TextField
             label="Тип сделки"
@@ -189,7 +296,7 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
             size="small"
             variant="outlined"
             name="idDealType"
-            value={addData.idDealType || ""}
+            value={addData.idDealType ?? 0}
             onChange={handleFormChange}
             InputLabelProps={{
               shrink: true,
@@ -205,12 +312,104 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
               },
             }}
           >
-            <MenuItem value={1} sx={{ fontSize: "14px" }}>
-              Наличный расчет
+            <MenuItem value={0} sx={{ fontSize: "14px" }}>
+              --------
             </MenuItem>
-            <MenuItem value={2} sx={{ fontSize: "14px" }}>
-              Рассрочка
+            {dealTypesData.state?.length && dealTypesData.state?.length > 0
+              ? dealTypesData.state.map((item, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={item.id}
+                      sx={{ fontSize: "14px" }}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  );
+                })
+              : null}
+          </TextField>
+        </Box>
+        <Box display="grid" gridTemplateColumns="1fr 1fr" gap={3} width="100%">
+          <TextField
+            label="Серия"
+            select
+            fullWidth
+            name="idSeries"
+            value={addData.idSeries ?? 0}
+            onChange={handleFormChange}
+            size="small"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{
+              fontSize: "14px",
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "#625bff",
+                },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#625bff",
+              },
+            }}
+          >
+            <MenuItem value={0} sx={{ fontSize: "14px" }}>
+              --------
             </MenuItem>
+            {reSeriesData.state?.length && reSeriesData.state?.length > 0
+              ? reSeriesData.state.map((item, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={item.id}
+                      sx={{ fontSize: "14px" }}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  );
+                })
+              : null}
+          </TextField>
+          <TextField
+            label="Отопление"
+            select
+            fullWidth
+            name="idHeating"
+            value={addData.idHeating ?? 0}
+            onChange={handleFormChange}
+            size="small"
+            variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            sx={{
+              fontSize: "14px",
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "#625bff",
+                },
+              "& .MuiInputLabel-root.Mui-focused": {
+                color: "#625bff",
+              },
+            }}
+          >
+            <MenuItem value={0} sx={{ fontSize: "14px" }}>
+              --------
+            </MenuItem>
+            {reHeatingsData.state?.length && reHeatingsData.state?.length > 0
+              ? reHeatingsData.state.map((item, index) => {
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={item.id}
+                      sx={{ fontSize: "14px" }}
+                    >
+                      {item.label}
+                    </MenuItem>
+                  );
+                })
+              : null}
           </TextField>
         </Box>
         <Box
@@ -362,7 +561,7 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
               placeholder="0"
               type="number"
               name="area"
-              value={addData.area ?? 0}
+              value={addData.area}
               onChange={handleFormChange}
               InputLabelProps={{
                 shrink: true,
@@ -397,14 +596,22 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
               }}
             >
               <MenuItem value={0} sx={{ fontSize: "14px" }}>
-                ------------
+                --------
               </MenuItem>
-              <MenuItem value={1} sx={{ fontSize: "14px" }}>
-                Кирпич
-              </MenuItem>
-              <MenuItem value={2} sx={{ fontSize: "14px" }}>
-                Пеноблок
-              </MenuItem>
+              {wallMaterialsData.state?.length &&
+              wallMaterialsData.state?.length > 0
+                ? wallMaterialsData.state.map((item, index) => {
+                    return (
+                      <MenuItem
+                        key={index}
+                        value={item.id}
+                        sx={{ fontSize: "14px" }}
+                      >
+                        {item.label}
+                      </MenuItem>
+                    );
+                  })
+                : null}
             </TextField>
           </Box>
           <Box>
@@ -449,11 +656,11 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
               });
             }}
             name={"documents"}
-            items={[
-              { id: 1, label: "Договор купли-продажи" },
-              { id: 2, label: "Красная книга" },
-              { id: 3, label: "Зеленая книга" },
-            ]}
+            items={
+              documentsData.state && documentsData.state.length
+                ? documentsData.state
+                : []
+            }
           />
         </Box>
       </Box>
@@ -461,6 +668,7 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({}) => {
         <CustomBtn
           icon={<CheckOutlined fontSize={"small"} />}
           label="Сохранить"
+          disabled={!isFormValid()}
           onClick={handleSubmit}
         />
       </Box>

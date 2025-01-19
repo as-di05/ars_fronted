@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Divider, Grid2 } from "@mui/material";
-import SearchBar from "../components/SearchBar";
+import { Box } from "@mui/material";
 import Container from "../containers/Container";
 import MainCardsContainer from "../containers/MainCardsContainer";
 import { categoriesData } from "../utils/config";
@@ -8,7 +7,6 @@ import CategoriesBar from "../components/CategoriesBar";
 import { apiRequest } from "../utils/api";
 
 const HomePage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortField, setSortField] = useState<string>("");
   const [reData, setReData] = useState<any[]>([]);
@@ -22,34 +20,53 @@ const HomePage: React.FC = () => {
   };
 
   const getRealEstates = async ({
-    categoryId,
+    filter,
     sortColumn,
   }: {
-    categoryId?: number | null;
+    filter?: {
+      categoryId?: number | null;
+      ownerName?: string;
+      ownerPhone?: string;
+      districtId?: number;
+      floorId?: number;
+      roomId?: number;
+      seriesId?: number;
+    };
     sortColumn?: string;
   }) => {
     try {
-      let query = "";
+      const queryParams = new URLSearchParams();
+      if (filter) {
+        Object.entries(filter).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            queryParams.append(`filter[${key}]`, value.toString());
+          }
+        });
+      }
+      if (sortColumn) {
+        queryParams.append("sortColumn", sortColumn);
+      }
 
-      query += categoryId ? `categoryId=${categoryId}` : "";
-      query += sortColumn
-        ? `${query.length ? "&" : ""}sortColumn=${sortColumn}`
-        : "";
-
-      const response = await apiRequest("GET", `/real-estate?${query}`);
+      const queryString = queryParams.toString();
+      const response = await apiRequest("GET", `/real-estate?${queryString}`);
       if (Array.isArray(response) && response.length) {
         setReData(response);
       } else {
         setReData([]);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error("Error fetching real estates:", e);
+    }
   };
 
   useEffect(() => {
     if (selectedCategory === null && !sortField?.length) {
       getRealEstates({});
     } else {
-      getRealEstates({ categoryId: selectedCategory, sortColumn: sortField });
+      getRealEstates({
+        filter: { categoryId: selectedCategory },
+        sortColumn: sortField,
+      });
     }
   }, [selectedCategory, sortField]);
 
@@ -89,7 +106,7 @@ const HomePage: React.FC = () => {
           <MainCardsContainer
             items={reData}
             onFieldSelected={handleFieldSorting}
-            onIdSelected={(id) => console.log("Выбранный ID:", id)}
+            // onIdSelected={(id) => console.log("Выбранный ID:", id)}
           />
         </Box>
       </Container>

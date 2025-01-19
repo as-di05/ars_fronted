@@ -70,7 +70,7 @@ const LoginPage: React.FC = () => {
           fontWeight="bold"
           sx={{ fontSize: "24px" }}
         >
-          Diamond House KG
+          TURAN CRM
         </Typography>
         <Typography color="gray" fontSize="14px" mt={0.5}>
           Агентство недвижимости

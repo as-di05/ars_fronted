@@ -13,6 +13,8 @@ interface UserProps {
   color?: string;
 }
 
+const baseUrl = "http://localhost:3001";
+
 const UserCard: React.FC<UserProps> = ({
   firstName,
   lastName,
@@ -35,7 +37,7 @@ const UserCard: React.FC<UserProps> = ({
   return (
     <Box display="flex" alignItems="center" gap={size === "big" ? 2 : 1}>
       <Avatar
-        src={avatarUrl ? avatarUrl : undefined}
+        src={avatarUrl ? `${baseUrl}${avatarUrl}` : undefined}
         sx={{
           bgcolor: bgcolor ? bgcolor : "#625bff",
           color: color ? color : "#fff",
