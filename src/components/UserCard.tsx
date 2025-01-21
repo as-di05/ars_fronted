@@ -13,7 +13,7 @@ interface UserProps {
   color?: string;
 }
 
-const baseUrl = "http://localhost:3001";
+const baseUrl = "https://turan-nedvijimost-27595b75bbe9.herokuapp.com";
 
 const UserCard: React.FC<UserProps> = ({
   firstName,

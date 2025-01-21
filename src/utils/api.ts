@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 const api: AxiosInstance = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: "https://turan-nedvijimost-27595b75bbe9.herokuapp.com",
   headers: {
     "Content-Type": "application/json",
   },

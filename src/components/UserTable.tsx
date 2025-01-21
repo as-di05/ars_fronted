@@ -11,13 +11,12 @@ import {
   Box,
   Divider,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IUser } from "../types/types";
 import CustomBtn from "./CustomBtn";
 import { AddBoxOutlined } from "@mui/icons-material";
 
-const baseUrl = "http://localhost:3001";
+const baseUrl = "https://turan-nedvijimost-27595b75bbe9.herokuapp.com";
 
 interface UserTableProps {
   users: IUser[];
