@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Avatar, Typography } from "@mui/material";
 import { IUser } from "../types/types";
+import { baseUrl } from "../utils/consts";
 
 interface UserProps {
   firstName: string;
@@ -12,8 +13,6 @@ interface UserProps {
   bgcolor?: string;
   color?: string;
 }
-
-const baseUrl = "https://turan-nedvijimost-27595b75bbe9.herokuapp.com";
 
 const UserCard: React.FC<UserProps> = ({
   firstName,
@@ -37,7 +36,7 @@ const UserCard: React.FC<UserProps> = ({
   return (
     <Box display="flex" alignItems="center" gap={size === "big" ? 2 : 1}>
       <Avatar
-        src={avatarUrl ? `${baseUrl}${avatarUrl}` : undefined}
+        src={avatarUrl ?? undefined}
         sx={{
           bgcolor: bgcolor ? bgcolor : "#625bff",
           color: color ? color : "#fff",

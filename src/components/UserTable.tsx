@@ -15,8 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IUser } from "../types/types";
 import CustomBtn from "./CustomBtn";
 import { AddBoxOutlined } from "@mui/icons-material";
-
-const baseUrl = "https://turan-nedvijimost-27595b75bbe9.herokuapp.com";
+import { baseUrl } from "../utils/consts";
 
 interface UserTableProps {
   users: IUser[];
@@ -69,9 +68,7 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell>
                 <Avatar
-                  src={
-                    user.avatarUrl ? `${baseUrl}${user.avatarUrl}` : undefined
-                  }
+                  src={user.avatarUrl ?? undefined}
                   sx={{
                     bgcolor: user.avatarUrl ? "transparent" : "#625bff",
                     color: "white",

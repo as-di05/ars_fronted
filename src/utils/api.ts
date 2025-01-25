@@ -1,7 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import { baseUrl } from "./consts";
 
 const api: AxiosInstance = axios.create({
-  baseURL: "https://turan-nedvijimost-27595b75bbe9.herokuapp.com",
+  baseURL: baseUrl,
   headers: {
     "Content-Type": "application/json",
   },
