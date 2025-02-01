@@ -278,6 +278,8 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                 borderRadius={"6px"}
                 padding={"8px 10px"}
                 display={"grid"}
+                alignItems={"start"}
+                gridTemplateRows={"21px auto"}
                 gap={1}
                 boxShadow={"2px 3px 4px #635bff67"}
               >
@@ -309,6 +311,8 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                 borderRadius={"6px"}
                 padding={"8px 10px"}
                 display={"grid"}
+                alignItems={"start"}
+                gridTemplateRows={"21px auto"}
                 gap={1}
                 boxShadow={"2px 3px 4px #635bff67"}
               >
@@ -340,9 +344,11 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                           justifyContent={"space-between"}
                         >
                           {(item.objectPrice || item.ownerPrice) && ` - `}
-                          {item.objectPrice
-                            ? `${item.objectPrice}${item.currency}`
-                            : null}
+                          {item.objectPrice ? (
+                            <span>
+                              {item.objectPrice} {item.currency}
+                            </span>
+                          ) : null}
                           {item.ownerPrice
                             ? ` / ${item.ownerPrice}${item.currency} (собстветнник)`
                             : null}

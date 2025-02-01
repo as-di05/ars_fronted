@@ -20,6 +20,7 @@ import { reHeatingsProperties } from "../features/reHeatings/reHeatingsActions";
 import { reSeriesProperties } from "../features/reSeries/reSeriesActions";
 import { documentsProperties } from "../features/reDocuments/documentsActions";
 import { wallMaterialsProperties } from "../features/wallMaterials/wallMaterialsActions";
+import EditEmployeePage from "./EditEmployeePage";
 
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -67,6 +68,7 @@ const Dashboard: React.FC = () => {
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/employees" element={<EmployeesPage />} />
             <Route path="/employees/create" element={<NewEmployeePage />} />
+            <Route path="/employees/:id" element={<EditEmployeePage />} />
             <Route path="/real-estates" element={<RealEstatesPage />} />
             <Route
               path="/real-estates/create"

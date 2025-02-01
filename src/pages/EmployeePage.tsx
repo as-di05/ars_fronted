@@ -11,7 +11,7 @@ const EmployeesPage: React.FC = () => {
   const [data, setData] = useState<any[]>([]);
 
   const handleEdit = (id: number) => {
-    console.log(`Редактировать пользователя с ID ${id}`);
+    navigate(`/employees/${id}`);
   };
 
   const handleDeleteUser = async (userId: number) => {
