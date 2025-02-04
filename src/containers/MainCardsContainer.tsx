@@ -149,8 +149,11 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
           sx={{ display: "grid", padding: "15px 5px" }}
         >
           {items.map((card) => (
-            <Grid2 key={card.id} maxHeight={210}>
-              <div onClick={() => handleCardClick(card.id)}>
+            <Grid2 key={card.id}>
+              <div
+                onClick={() => handleCardClick(card.id)}
+                style={{ maxHeight: "210px" }}
+              >
                 <RealEstateCard card={card} navigate={navigate} />
               </div>
             </Grid2>

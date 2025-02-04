@@ -17,6 +17,20 @@ interface AddRealEstateContainerProps {
   getRealEstates: (filter: { [key: string]: any }) => void;
 }
 
+const ScrollClassStyle = {
+  "&::-webkit-scrollbar": {
+    height: "10px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    borderRadius: "3px",
+  },
+  "&::-webkit-scrollbar-track": {
+    backgroundColor: "#f0f0f0",
+  },
+  // scrollbarWidth: "thin",
+  paddingBottom: "3px"
+};
+
 const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
   getRealEstates,
 }) => {
@@ -478,7 +492,12 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
         >
           <Box display={"grid"} gap={1.4} fontSize={"14px"} maxWidth={"100%"}>
             Этажность:
-            <Box display={"flex"} gap={1} overflow={"auto"}>
+            <Box
+              display={"flex"}
+              gap={1}
+              overflow={"auto"}
+              sx={ScrollClassStyle}
+            >
               {Object.keys(FloorsObj).map((key) => {
                 const item = FloorsObj[+key];
                 return (
@@ -515,7 +534,12 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
           </Box>
           <Box display={"grid"} gap={1.4} fontSize={"14px"} maxWidth={"100%"}>
             Комнаты:
-            <Box display={"flex"} gap={1} overflow={"auto"}>
+            <Box
+              display={"flex"}
+              gap={1}
+              overflow={"auto"}
+              sx={ScrollClassStyle}
+            >
               {Object.keys(RoomsObj).map((key) => {
                 const item = RoomsObj[+key];
                 return (

@@ -37,7 +37,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
       <Box
         sx={{
           width: "min-content",
-          maxHeight: "220px",
+          maxHeight: "210px",
           display: "flex",
           alignItems: "center",
           backgroundColor: `${ReStatusObj[statusId].color}30`,
@@ -68,6 +68,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
         e.stopPropagation();
       }}
       sx={{
+        maxHeight: "210px",
         display: "grid",
         gridTemplateColumns: "20% 80%",
         justifyContent: "start",

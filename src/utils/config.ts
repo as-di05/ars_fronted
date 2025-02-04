@@ -73,6 +73,66 @@ export const FloorsObj: { [key: number]: IRoom } = {
     id: 9,
     label: "9 этаж",
   },
+  10: {
+    id: 10,
+    label: "10 этаж",
+  },
+  11: {
+    id: 11,
+    label: "11 этаж",
+  },
+  12: {
+    id: 12,
+    label: "12 этаж",
+  },
+  13: {
+    id: 13,
+    label: "13 этаж",
+  },
+  14: {
+    id: 14,
+    label: "14 этаж",
+  },
+  15: {
+    id: 15,
+    label: "15 этаж",
+  },
+  16: {
+    id: 16,
+    label: "16 этаж",
+  },
+  17: {
+    id: 17,
+    label: "17 этаж",
+  },
+  18: {
+    id: 18,
+    label: "18 этаж",
+  },
+  19: {
+    id: 19,
+    label: "19 этаж",
+  },
+  20: {
+    id: 20,
+    label: "20 этаж",
+  },
+  21: {
+    id: 21,
+    label: "21 этаж",
+  },
+  22: {
+    id: 22,
+    label: "22 этаж",
+  },
+  23: {
+    id: 23,
+    label: "23 этаж",
+  },
+  24: {
+    id: 24,
+    label: "24 этаж",
+  },
 };
 
 export const RoomsObj: { [key: number]: IRoom } = {

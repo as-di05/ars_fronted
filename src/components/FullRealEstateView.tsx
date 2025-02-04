@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -6,6 +6,14 @@ import {
   ImageList,
   ImageListItem,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  RadioGroup,
+  FormControlLabel,
+  Button,
+  Radio,
 } from "@mui/material";
 import {
   ArrowForward,
@@ -21,6 +29,7 @@ import {
   CurrencyExchangeOutlined,
   AutoAwesomeMotionOutlined,
   LocalFireDepartmentOutlined,
+  EditRounded,
 } from "@mui/icons-material";
 import Container from "../containers/Container";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -29,6 +38,7 @@ import { FloorsObj, ReStatusObj, RoomsObj } from "../utils/config";
 import UserCard from "./UserCard";
 import FavoriteButton from "./FavoriteBtn";
 import { useAppSelector } from "../hooks/hooks";
+import { apiRequest } from "../utils/api";
 
 interface FullRealEstateViewProps {
   data: any;
@@ -41,6 +51,37 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
   const heatingsData = useAppSelector((state) => state.reHeatings);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<any>(null);
+  const [realEstateStatusId, setRealEstateStatusId] = useState<any>(null);
+
+  const handleEditStatus = async (id: number) => {
+    if (!id || !selectedStatus) {
+      return;
+    }
+    try {
+      const response: any = await apiRequest(
+        "POST",
+        "/real-estate/update-status",
+        {
+          id: id,
+          statusId: selectedStatus,
+        }
+      );
+      if (response?.status === true) {
+        setRealEstateStatusId(selectedStatus);
+      }
+      handleClose();
+    } catch (e) {}
+  };
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedStatus(Number(event.target.value));
+  };
 
   const handleImageClick = (index: React.SetStateAction<number>) => {
     setCurrentIndex(index);
@@ -56,34 +97,15 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
     );
   };
 
-  const renderStatusIcon = (statusId: number) => {
-    if (!ReStatusObj[statusId]) {
-      return null;
+  useEffect(() => {
+    if (data?.idStatus) {
+      setSelectedStatus(data?.idStatus);
+      setRealEstateStatusId(data?.idStatus);
+    } else {
+      setSelectedStatus(null);
+      setRealEstateStatusId(null);
     }
-    return (
-      <Box
-        sx={{
-          width: "min-content",
-          display: "flex",
-          alignItems: "center",
-          backgroundColor: `${ReStatusObj[statusId].color}30`,
-          padding: "6px 25px",
-          borderRadius: "6px",
-          gap: "3px",
-        }}
-      >
-        <Typography
-          variant="body2"
-          fontSize={15}
-          fontWeight={"500"}
-          noWrap
-          color={ReStatusObj[statusId].color}
-        >
-          {ReStatusObj[statusId].label}
-        </Typography>
-      </Box>
-    );
-  };
+  }, [data]);
 
   function formatDate(dateString: any) {
     const date = new Date(dateString);
@@ -94,6 +116,81 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
 
     return `"${day}-${month}-${year}"`;
   }
+
+  const renderStatus = (statusId: number) => {
+    if (!ReStatusObj[selectedStatus]) {
+      return null;
+    }
+    return (
+      <Box display="flex" position="relative">
+        <Box
+          sx={{
+            width: "min-content",
+            display: "flex",
+            alignItems: "center",
+            backgroundColor: `${ReStatusObj[statusId]?.color}30`,
+            padding: "6px 25px",
+            borderRadius: "6px",
+            gap: "3px",
+          }}
+        >
+          <Typography
+            variant="body2"
+            fontSize={15}
+            fontWeight="500"
+            color={ReStatusObj[statusId]?.color}
+          >
+            {ReStatusObj[statusId]?.label}
+          </Typography>
+        </Box>
+        <IconButton
+          onClick={handleOpen}
+          sx={{
+            position: "absolute",
+            top: "-15px",
+            right: "-15px",
+            color: "#ffa600",
+            borderRadius: "50%",
+            "&:hover": {
+              background: "none",
+              scale: "1.1",
+            },
+          }}
+        >
+          <EditRounded sx={{ width: "20px", height: "20px" }} />
+        </IconButton>
+        <Dialog open={open} onClose={handleClose}>
+          <Box sx={{ padding: "10px" }}>
+            <DialogTitle>Изменение статуса объекта</DialogTitle>
+            <DialogContent>
+              <RadioGroup value={selectedStatus} onChange={handleStatusChange}>
+                {Object.entries(ReStatusObj).map(([id, status]: any) => (
+                  <FormControlLabel
+                    key={id}
+                    value={id}
+                    control={<Radio />}
+                    label={status.label}
+                  />
+                ))}
+              </RadioGroup>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose} color="secondary">
+                Отмена
+              </Button>
+              <Button
+                onClick={() => handleEditStatus(data?.id)}
+                color="primary"
+                variant="contained"
+              >
+                Сохранить
+              </Button>
+            </DialogActions>
+          </Box>
+        </Dialog>
+      </Box>
+    );
+  };
 
   return (
     <Container
@@ -264,7 +361,7 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                   {data.district?.label}
                 </Typography>
               </Box>
-              <Box display="flex">{renderStatusIcon(data.idStatus)}</Box>
+              {renderStatus(realEstateStatusId)}
             </Box>
             <Box
               height={"100%"}
@@ -329,7 +426,7 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                   />
                   Цены:
                 </Typography>
-                <Box display={"grid"} gap={0.8}>
+                <Box display={"grid"} gap={0.8} justifyContent={"start"}>
                   {data.prices?.map((item: any) => {
                     const updatedAt = new Date(item.updatedAt);
                     const year = updatedAt.getFullYear();
@@ -345,12 +442,13 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
                         >
                           {(item.objectPrice || item.ownerPrice) && ` - `}
                           {item.objectPrice ? (
-                            <span>
-                              {item.objectPrice} {item.currency}
+                            <span style={{ fontWeight: 500 }}>
+                              {item.objectPrice}
+                              {item.currency}
                             </span>
-                          ) : null}
+                          ) : null}{" "}
                           {item.ownerPrice
-                            ? ` / ${item.ownerPrice}${item.currency} (собстветнник)`
+                            ? ` / ${item.ownerPrice}${item.currency} (собстветнник) `
                             : null}
                           - {formatDate(item.updatedAt)}
                         </Typography>
