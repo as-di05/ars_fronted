@@ -4,14 +4,9 @@ import {
   CardContent,
   Typography,
   CardMedia,
-  Chip,
   Box,
   Divider,
-  IconButton,
-  Avatar,
 } from "@mui/material";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import { IRealEstate } from "../types/types";
 import IconContainer from "../containers/IconContainer";
 import {
@@ -23,14 +18,17 @@ import {
   StairsRounded,
   TaskRounded,
 } from "@mui/icons-material";
-import { FloorsObj, IdTypeObj, ReStatusObj, RoomsObj } from "../utils/config";
+import { FloorsObj, ReStatusObj, RoomsObj } from "../utils/config";
 import UserCard from "./UserCard";
+import { NavigateFunction } from "react-router-dom";
+import FavoriteButton from "./FavoriteBtn";
 
 interface RealEstateCardProps {
   card: IRealEstate;
+  navigate: NavigateFunction;
 }
 
-const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
+const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
   const renderStatusIcon = (statusId: number) => {
     if (!ReStatusObj[statusId]) {
       return null;
@@ -39,17 +37,18 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
       <Box
         sx={{
           width: "min-content",
+          maxHeight: "210px",
           display: "flex",
           alignItems: "center",
           backgroundColor: `${ReStatusObj[statusId].color}30`,
-          padding: "5px 18px",
-          borderRadius: "8px",
-          gap: "5px",
+          padding: "3px 14px",
+          borderRadius: "6px",
+          gap: "3px",
         }}
       >
         <Typography
           variant="body2"
-          fontSize={14}
+          fontSize={13}
           fontWeight={"500"}
           noWrap
           color={ReStatusObj[statusId].color}
@@ -62,7 +61,14 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
 
   return (
     <Card
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest(".favorite-button") === null) {
+          navigate(`/real-estates/${card.id}`);
+        }
+        e.stopPropagation();
+      }}
       sx={{
+        maxHeight: "210px",
         display: "grid",
         gridTemplateColumns: "20% 80%",
         justifyContent: "start",
@@ -80,7 +86,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
             objectFit: "cover",
             borderRadius: "8px 0 0 8px",
           }}
-          image={card?.image || "https://via.placeholder.com/150"}
+          image={card?.images?.length ? card?.images[0].url : "/no_photo.png"}
           alt={card.description}
         />
       </Box>
@@ -95,11 +101,8 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
       >
         <Box display={"flex"} justifyContent={"space-between"}>
           <Box display={"flex"} flexDirection={"column"}>
-            <Typography variant="body2" fontSize={16} fontWeight={600}>
-              <span>
-                {card.dealType?.id ? IdTypeObj[card.dealType?.id] : ""}
-                {card.id}
-              </span>
+            <Typography variant="body2" fontSize={14} fontWeight={600}>
+              <span>ID: {card.id}</span>
               {" - "}
               {card.category.label}
             </Typography>
@@ -107,7 +110,6 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
               {card.ownerName}
             </Typography>
           </Box>
-
           <Box>
             {card.prices && card.prices.length > 0 && (
               <Box>
@@ -120,7 +122,7 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
                   >
                     <Typography
                       fontWeight={"600"}
-                      fontSize={"18px"}
+                      fontSize={"15px"}
                       color="#625bff"
                     >
                       {card.prices[0].objectPrice}
@@ -146,24 +148,36 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
         >
           <Box display={"grid"}>
             <Box display={"flex"} alignItems={"center"} gap={0.5}>
-              <LocationOnRounded sx={{ width: "15px", color: "#78a7fe" }} />
-              <Typography variant="body2" color="#78a7fe">
-                {card.district}
+              <LocationOnRounded
+                sx={{ width: "12px", height: "12px", color: "#78a7fe" }}
+              />
+              <Typography variant="body2" color="#78a7fe" fontSize={"12px"}>
+                {card.district?.label}
               </Typography>
             </Box>
             {card.dealType && (
               <Box display={"flex"} alignItems={"center"} gap={0.5}>
-                <CreditScoreRounded sx={{ width: "15px", color: "#78a7fe" }} />
-                <Typography variant="body2" color="#78a7fe">
+                <CreditScoreRounded
+                  sx={{ width: "12px", height: "12px", color: "#78a7fe" }}
+                />
+                <Typography variant="body2" color="#78a7fe" fontSize={"12px"}>
                   {card.dealType.label}
                 </Typography>
               </Box>
             )}
-
             <Typography
+              width={"100%"}
               variant="body2"
               color="textSecondary"
-              marginTop={"10px"}
+              marginTop="5px"
+              fontSize="12px"
+              sx={{
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                WebkitLineClamp: 2,
+              }}
             >
               {card.description}
             </Typography>
@@ -225,15 +239,11 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card }) => {
             )}
           </Box>
           <Box display={"flex"} alignItems={"center"} gap={0.5}>
-            <IconButton
-              onClick={() => console.log(1)}
-              color={true ? "secondary" : "default"}
-              sx={{
-                backgroundColor: "none",
-              }}
-            >
-              {card.id % 2 === 1 ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-            </IconButton>
+            <FavoriteButton
+              className="favorite-button"
+              realEstateId={card.id}
+              isFavorite={card?.isFavorite ?? false}
+            />
             <UserCard
               avatarUrl={card.employee.avatarUrl}
               lastName={card.employee.lastName}

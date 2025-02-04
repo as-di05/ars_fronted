@@ -17,11 +17,17 @@ interface Role {
   label: string;
 }
 
+export interface ICommonType {
+  id: number;
+  label: string;
+}
+
 export interface IUser {
   id: number;
-  phone: string;
+  phoneNumber: string;
   roleId?: number;
   role?: Role;
+  login?: string;
   lastName: string;
   firstName: string;
   avatarUrl?: string | null;
@@ -41,6 +47,10 @@ export interface IRealEstate {
     id: number;
     label: string;
   } | null;
+  district: {
+    id: number;
+    label: string;
+  } | null;
   idWallMaterial: number;
   ownerPhone: string;
   ownerName: string;
@@ -49,9 +59,12 @@ export interface IRealEstate {
   createdAt: string;
   updatedAt: string;
   area: number;
-  image?: string | null;
-  district: string;
+  images?: {
+    id: string;
+    url: string;
+  }[];
   description: string;
+  isFavorite?: boolean;
   documents?: IDocument[] | null;
   prices?: IPrice[] | null;
 }
@@ -65,4 +78,22 @@ export interface IReStatus {
   id: number;
   label: string;
   color: string;
+}
+
+export interface IRealEstateInput {
+  id?: number;
+  categoryId: number;
+  ownerName: string;
+  ownerPhone: string;
+  idRoom: number;
+  idFloor: number;
+  area?: number;
+  idSeries?: number;
+  idDistrict?: number;
+  idDealType?: number;
+  idWallMaterial?: number;
+  description?: string;
+  documents?: number[] | null;
+  images?: string[] | null;
+  price?: IPrice | null;
 }

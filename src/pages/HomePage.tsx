@@ -1,52 +1,116 @@
-import React, { useState } from "react";
-import { Box, Divider, Grid2 } from "@mui/material";
-import SearchBar from "../components/SearchBar";
+import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
 import Container from "../containers/Container";
 import MainCardsContainer from "../containers/MainCardsContainer";
-import { realEstateData } from "../utils/config";
+import { categoriesData } from "../utils/config";
+import CategoriesBar from "../components/CategoriesBar";
+import { apiRequest } from "../utils/api";
 
 const HomePage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState("Все");
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [sortField, setSortField] = useState<string>("");
+  const [reData, setReData] = useState<any[]>([]);
 
-  const filterOptions = ["Все", "Активные", "Завершенные"];
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
+  const handleSelectCategory = (categoryId: number) => {
+    setSelectedCategory(categoryId);
   };
 
-  const filteredCards = realEstateData.filter(
-    (card) =>
-      filter === "Все" ||
-      (card.id === 1 && filter === "Активные") ||
-      (card.id === 2 && filter === "Завершенные")
-  );
+  const handleFieldSorting = (field: string) => {
+    setSortField(field);
+  };
+
+  const getRealEstates = async ({
+    filter,
+    sortColumn,
+  }: {
+    filter?: {
+      categoryId?: number | null;
+      ownerName?: string;
+      ownerPhone?: string;
+      districtId?: number;
+      floorId?: number;
+      roomId?: number;
+      seriesId?: number;
+    };
+    sortColumn?: string;
+  }) => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (filter) {
+        Object.entries(filter).forEach(([key, value]) => {
+          if (value !== undefined && value !== null) {
+            queryParams.append(`filter[${key}]`, value.toString());
+          }
+        });
+      }
+      if (sortColumn) {
+        queryParams.append("sortColumn", sortColumn);
+      }
+
+      const queryString = queryParams.toString();
+      const response = await apiRequest("GET", `/real-estate?${queryString}`);
+      if (Array.isArray(response) && response.length) {
+        setReData(response);
+      } else {
+        setReData([]);
+      }
+    } catch (e) {
+      console.error("Error fetching real estates:", e);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedCategory === null && !sortField?.length) {
+      getRealEstates({});
+    } else {
+      getRealEstates({
+        filter: { categoryId: selectedCategory },
+        sortColumn: sortField,
+      });
+    }
+  }, [selectedCategory, sortField]);
 
   return (
-    <Container
-      display="grid"
-      alignItems="center"
-      gap={2}
-      sx={{
-        backgroundColor: "#f9f9f9",
-        borderRadius: "8px",
-        height: "90vh",
-        padding: "20px",
-      }}
+    <Box
+      display={"flex"}
+      flexDirection={"column"}
+      justifyContent={"start"}
+      gap={"10px"}
+      height={"100%"}
     >
-      <Box>
-        <SearchBar
-          value={searchTerm}
-          onChange={handleSearchChange}
-          availableFilters={filterOptions}
+      <Container
+        sx={{
+          height: "auto",
+          alignItems: "start",
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+        }}
+      >
+        <CategoriesBar
+          data={[{ id: 0, label: "Все" }, ...categoriesData]}
+          handleSelect={handleSelectCategory}
         />
-        <Divider sx={{ width: "100%", margin: "8px 0 10px 0" }} />
-        <MainCardsContainer
-          filteredCards={filteredCards}
-          onFieldSelected={(field) => console.log("Выбранное поле:", field)}
-          onIdSelected={(id) => console.log("Выбранный ID:", id)}
-        />
-      </Box>
-    </Container>
+      </Container>
+      <Container
+        display="grid"
+        alignItems="center"
+        gap={2}
+        sx={{
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+          height: "100%",
+          padding: "20px",
+        }}
+      >
+        <Box>
+          <MainCardsContainer
+            items={reData}
+            onFieldSelected={handleFieldSorting}
+            // onIdSelected={(id) => console.log("Выбранный ID:", id)}
+          />
+        </Box>
+      </Container>
+    </Box>
   );
 };
 

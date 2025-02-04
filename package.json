@@ -5,16 +5,21 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@fastify/static": "^8.0.4",
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
+    "@nestjs/platform-fastify": "^11.0.1",
     "@reduxjs/toolkit": "^2.5.0",
     "axios": "^1.7.9",
+    "browser-image-compression": "^2.0.2",
     "cra-template-typescript": "1.2.0",
+    "fastify": "^5.2.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.2",
-    "react-scripts": "^5.0.1"
+    "react-scripts": "^5.0.1",
+    "redux-thunk": "^3.1.0"
   },
   "scripts": {
     "start": "react-scripts start",

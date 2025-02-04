@@ -1,19 +1,28 @@
 import React from "react";
 import { Box, Avatar, Typography } from "@mui/material";
 import { IUser } from "../types/types";
+import { baseUrl } from "../utils/consts";
 
 interface UserProps {
   firstName: string;
   lastName: string;
   avatarUrl?: string | null;
-  onToggleFavorite?: () => any;
+  phone?: string;
+  inFull?: boolean;
+  size?: "small" | "big";
+  bgcolor?: string;
+  color?: string;
 }
 
 const UserCard: React.FC<UserProps> = ({
   firstName,
   lastName,
   avatarUrl,
-  onToggleFavorite,
+  bgcolor,
+  color,
+  phone,
+  inFull,
+  size,
 }) => {
   const handleUserName = (lastName: any, firstName: any) => {
     if (!firstName && !lastName) {
@@ -25,19 +34,31 @@ const UserCard: React.FC<UserProps> = ({
   };
 
   return (
-    <Box display="flex" alignItems="center" gap={0.5}>
+    <Box display="flex" alignItems="center" gap={size === "big" ? 2 : 1}>
       <Avatar
-        src={avatarUrl ? avatarUrl : undefined}
+        src={avatarUrl ?? undefined}
         sx={{
-          bgcolor: false ? "transparent" : "#625bff",
-          color: "white",
-          width: "28px",
-          height: "28px",
-          fontSize: '16px'
+          bgcolor: bgcolor ? bgcolor : "#625bff",
+          color: color ? color : "#fff",
+          width: size === "big" ? "36px" : "28px",
+          height: size === "big" ? "36px" : "28px",
+          fontSize: size === "big" ? "20px" : "16px",
         }}
       >
         {handleUserName(firstName, lastName)}
       </Avatar>
+      {inFull === true && (
+        <Box display={"grid"}>
+          <Box fontSize={size === "big" ? 16 : 13} fontWeight={"500"}>
+            {lastName} {firstName}
+          </Box>
+          {phone && (
+            <Box fontSize={size === "big" ? 14 : 10} color={"#7c7c7c"}>
+              {phone}
+            </Box>
+          )}
+        </Box>
+      )}
     </Box>
   );
 };
