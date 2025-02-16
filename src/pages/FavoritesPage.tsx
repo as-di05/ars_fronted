@@ -17,7 +17,6 @@ const FavoritesPage: React.FC = () => {
   const navigate = useNavigate();
   const [reData, setReData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isFavorites, setIsFavorites] = useState<boolean>(false);
 
   const getRealEstates = async ({
     filter,

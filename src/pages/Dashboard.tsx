@@ -21,6 +21,8 @@ import { reSeriesProperties } from "../features/reSeries/reSeriesActions";
 import { documentsProperties } from "../features/reDocuments/documentsActions";
 import { wallMaterialsProperties } from "../features/wallMaterials/wallMaterialsActions";
 import EditEmployeePage from "./EditEmployeePage";
+import CustomersPage from "./CustomersPage";
+import NewCustomerPage from "./NewCustomerPage";
 
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -75,6 +77,8 @@ const Dashboard: React.FC = () => {
               element={<NewRealEstatePage />}
             />
             <Route path="/real-estates/:id" element={<FullRealEstatePage />} />
+            <Route path="/customers" element={<CustomersPage />} />
+            <Route path="/customers/create" element={<NewCustomerPage />} />
           </Routes>
         </Box>
       </Box>

@@ -179,7 +179,9 @@ const RealEstateCard: React.FC<RealEstateCardProps> = ({ card, navigate }) => {
                 WebkitLineClamp: 2,
               }}
             >
-              {card.description}
+              {!card.description || card.description === "null"
+                ? card.description
+                : null}
             </Typography>
           </Box>
           <Box height={"100%"} display={"flex"} alignItems={"flex-end"}>

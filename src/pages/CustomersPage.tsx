@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Divider } from "@mui/material";
+import SearchBar from "../components/SearchBar";
 import Container from "../containers/Container";
-import MainCardsContainer from "../containers/MainCardsContainer";
+import MainCustomersContainer from "../containers/MainCustomersContainer";
 import { categoriesData } from "../utils/config";
 import CategoriesBar from "../components/CategoriesBar";
+import { AddBoxOutlined } from "@mui/icons-material";
+import CustomBtn from "../components/CustomBtn";
+import { useNavigate } from "react-router-dom";
 import { apiRequest } from "../utils/api";
 
-const HomePage: React.FC = () => {
+const CustomersPage: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortField, setSortField] = useState<string>("");
-  const [reData, setReData] = useState<any[]>([]);
+  const [customersData, setCustomersData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+
+  const handleAddNew = () => {
+    navigate("/customers/create");
+  };
 
   const handleSelectCategory = (categoryId: number) => {
     setSelectedCategory(categoryId);
@@ -20,18 +29,15 @@ const HomePage: React.FC = () => {
     setSortField(field);
   };
 
-  const getRealEstates = async ({
+  const getCustomers = async ({
     filter,
     sortColumn,
   }: {
     filter?: {
       categoryId?: number | null;
-      ownerName?: string;
-      ownerPhone?: string;
+      customerName?: string;
+      customerPhone?: string;
       districtId?: number;
-      floorId?: number;
-      roomId?: number;
-      seriesId?: number;
     };
     sortColumn?: string;
   }) => {
@@ -48,16 +54,17 @@ const HomePage: React.FC = () => {
       if (sortColumn) {
         queryParams.append("sortColumn", sortColumn);
       }
+      queryParams.append("onlyMy", "true");
 
       const queryString = queryParams.toString();
-      const response = await apiRequest("GET", `/real-estate?${queryString}`);
+      const response = await apiRequest("GET", `/customers?${queryString}`);
       if (Array.isArray(response) && response.length) {
-        setReData(response);
+        setCustomersData(response);
       } else {
-        setReData([]);
+        setCustomersData([]);
       }
     } catch (e) {
-      console.error("Error fetching real estates:", e);
+      console.error("Error fetching customers:", e);
     } finally {
       setLoading(false);
     }
@@ -65,9 +72,9 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     if (selectedCategory === null && !sortField?.length) {
-      getRealEstates({});
+      getCustomers({});
     } else {
-      getRealEstates({
+      getCustomers({
         filter: { categoryId: selectedCategory },
         sortColumn: sortField,
       });
@@ -107,11 +114,29 @@ const HomePage: React.FC = () => {
         }}
       >
         <Box>
-          <MainCardsContainer
-            items={reData}
+          <Box
+            display={"flex"}
+            justifyContent={"end"}
+            sx={{ cursor: "pointer" }}
+            margin={"5px 0"}
+          >
+            <CustomBtn
+              icon={<AddBoxOutlined fontSize={"small"} />}
+              label="Новый покупатель"
+              onClick={handleAddNew}
+            />
+          </Box>
+          <Divider
+            sx={{
+              width: "100%",
+              margin: "14px 0",
+            }}
+          />
+          <MainCustomersContainer
+            containerHeight="calc(90vh - 270px)"
+            items={customersData}
             onFieldSelected={handleFieldSorting}
             loading={loading}
-            // onIdSelected={(id) => console.log("Выбранный ID:", id)}
           />
         </Box>
       </Container>
@@ -119,4 +144,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default CustomersPage;

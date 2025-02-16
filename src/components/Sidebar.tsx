@@ -6,6 +6,7 @@ import {
   ExitToApp,
   CorporateFareOutlined,
   FavoriteBorderOutlined,
+  PersonSearchOutlined,
 } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
 import { useAppSelector } from "../hooks/hooks";
@@ -35,6 +36,12 @@ const Sidebar: React.FC = () => {
     },
     {
       id: 4,
+      name: "Покупатели",
+      to: "/customers",
+      icon: <PersonSearchOutlined sx={{ width: "18px" }} />,
+    },
+    {
+      id: 5,
       name: "Избранное",
       to: "/favorites",
       icon: <FavoriteBorderOutlined sx={{ width: "18px" }} />,

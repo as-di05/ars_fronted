@@ -157,7 +157,9 @@ const FullRealEstateView: React.FC<FullRealEstateViewProps> = ({ data }) => {
             },
           }}
         >
-          <EditRounded sx={{ width: "20px", height: "20px" }} />
+          {currentUserState.state?.id === data?.employee?.id ? (
+            <EditRounded sx={{ width: "20px", height: "20px" }} />
+          ) : null}
         </IconButton>
         <Dialog open={open} onClose={handleClose}>
           <Box sx={{ padding: "10px" }}>
