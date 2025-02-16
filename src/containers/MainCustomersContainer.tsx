@@ -10,13 +10,13 @@ import {
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import RealEstateCard from "../components/RealEstateCard";
+import CustomerCard from "../components/CustomerCard";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import { IRealEstate } from "../types/types";
+import { ICustomer } from "../types/types";
 import { useNavigate } from "react-router-dom";
 
-interface MainCardsContainerProps {
-  items: IRealEstate[];
+interface MainCustomersContainerProps {
+  items: ICustomer[];
   onFieldSelected?: (field: string) => void;
   onIdSelected?: (id: number) => void;
   containerHeight?: string;
@@ -27,7 +27,7 @@ const sortOptions = [
   { id: "lastUpdated", label: "Измененные" },
 ];
 
-const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
+const MainCustomersContainer: React.FC<MainCustomersContainerProps> = ({
   items,
   onFieldSelected,
   onIdSelected,
@@ -156,7 +156,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
               display="flex"
               justifyContent="center"
               alignItems="center"
-              height={'50vh'}
+              height={"50vh"}
             >
               <CircularProgress />
             </Box>
@@ -167,7 +167,7 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
                   onClick={() => handleCardClick(card.id)}
                   style={{ maxHeight: "210px" }}
                 >
-                  <RealEstateCard card={card} navigate={navigate} />
+                  <CustomerCard card={card} navigate={navigate} />
                 </div>
               </Grid2>
             ))
@@ -178,4 +178,4 @@ const MainCardsContainer: React.FC<MainCardsContainerProps> = ({
   );
 };
 
-export default MainCardsContainer;
+export default MainCustomersContainer;

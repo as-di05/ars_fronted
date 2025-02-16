@@ -15,6 +15,7 @@ const RealEstatesPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [sortField, setSortField] = useState<string>("");
   const [reData, setReData] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const handleAddNew = () => {
     navigate("/real-estates/create");
@@ -43,6 +44,7 @@ const RealEstatesPage: React.FC = () => {
     };
     sortColumn?: string;
   }) => {
+    setLoading(true);
     try {
       const queryParams = new URLSearchParams();
       if (filter) {
@@ -66,6 +68,8 @@ const RealEstatesPage: React.FC = () => {
       }
     } catch (e) {
       console.error("Error fetching real estates:", e);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -135,7 +139,7 @@ const RealEstatesPage: React.FC = () => {
             containerHeight="calc(90vh - 270px)"
             items={reData}
             onFieldSelected={handleFieldSorting}
-            // onIdSelected={(id) => console.log("Выбранный ID:", id)}
+            loading={loading}
           />
         </Box>
       </Container>

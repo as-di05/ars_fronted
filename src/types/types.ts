@@ -97,3 +97,33 @@ export interface IRealEstateInput {
   images?: string[] | null;
   price?: IPrice | null;
 }
+
+export interface ICustomer {
+  id: number;
+  category: {
+    id: number;
+    label: string;
+  };
+  employee: IUser;
+  district: {
+    id: number;
+    label: string;
+  } | null;
+  customerPhone: string;
+  customerName: string;
+  idStatus: number;
+  statusUpdatedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  description: string;
+  prices?: ICustomerPrice[] | null;
+}
+
+export interface ICustomerPrice {
+  id: number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+  startPrice: number;
+  endPrice: number | null;
+}
