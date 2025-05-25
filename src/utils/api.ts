@@ -16,6 +16,18 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear token and redirect to login
+      localStorage.removeItem("jwt");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const apiRequest = async <T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   url: string,
