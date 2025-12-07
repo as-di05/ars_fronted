@@ -212,6 +212,7 @@ const UpdateUserContainer: React.FC = () => {
           value={formData.roleId}
           onChange={handleFormChange}
         >
+          {formData.roleId === 1 && <MenuItem value={1}>Управляющий</MenuItem>}
           <MenuItem value={2}>Менеджер</MenuItem>
           <MenuItem value={3}>Сотрудник</MenuItem>
         </TextField>

@@ -42,6 +42,7 @@ const AddCustomerContainer: React.FC<AddCustomerContainerProps> = ({}) => {
     categoryId: null,
     idDistrict: null,
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -77,6 +78,9 @@ const AddCustomerContainer: React.FC<AddCustomerContainerProps> = ({}) => {
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
     const data = {
       categoryId: addData.categoryId,
       customerName: customerName,
@@ -96,6 +100,8 @@ const AddCustomerContainer: React.FC<AddCustomerContainerProps> = ({}) => {
       }
     } catch (error) {
       console.error("Error registering customer:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -297,8 +303,8 @@ const AddCustomerContainer: React.FC<AddCustomerContainerProps> = ({}) => {
       <Box display={"flex"} justifyContent={"end"} width={"100%"}>
         <CustomBtn
           icon={<CheckOutlined fontSize={"small"} />}
-          label="Сохранить"
-          disabled={!isFormValid()}
+          label={isSubmitting ? "Добавление..." : "Добавить"}
+          disabled={!isFormValid() || isSubmitting}
           onClick={handleSubmit}
         />
       </Box>

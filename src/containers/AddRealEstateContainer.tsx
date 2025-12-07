@@ -84,6 +84,7 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
     idSeries: null,
     idFloor: null,
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -127,6 +128,9 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
     const data: any = new FormData();
     const compressionOptions = {
       maxSizeMB: 1,
@@ -177,7 +181,11 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
       if (response?.status === true) {
         navigate("/real-estates");
       }
-    } catch (e) {}
+    } catch (e) {
+      // Ошибка обрабатывается, состояние сбросится в finally
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const fetchData = useCallback(async () => {
@@ -691,8 +699,8 @@ const AddRealEstateContainer: React.FC<AddRealEstateContainerProps> = ({
       <Box display={"flex"} justifyContent={"end"} width={"100%"}>
         <CustomBtn
           icon={<CheckOutlined fontSize={"small"} />}
-          label="Сохранить"
-          disabled={!isFormValid()}
+          label={isSubmitting ? "Добавление..." : "Добавить"}
+          disabled={!isFormValid() || isSubmitting}
           onClick={handleSubmit}
         />
       </Box>
